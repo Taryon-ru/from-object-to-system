@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+title: "От объекта к системе"
+message: "Если вы используете эту книгу, пожалуйста, укажите автора и ссылку на оригинал."
+type: book
+
+version: "0.1.0"
+date-released: 2026-08-07
+
+repository-code: "https://github.com/Taryon-ru/from-object-to-system"
+url: "https://taryon-ru.github.io/from-object-to-system/"
+
+license: "CC-BY-4.0"
+language:
+  - ru
