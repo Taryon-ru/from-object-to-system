@@ -1,0 +1,6 @@
+# Исключить CSS и JS из определения языка
+*.css linguist-detectable=false
+*.js linguist-detectable=false
+
+# Markdown — основной язык
+*.md linguist-language=Markdown
