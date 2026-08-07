@@ -253,13 +253,14 @@ body.night .content code {
     font-weight: 650;
   }
 
-  .content h4 {
+  #content .content h4 {
     margin-top: 1.8rem;
     margin-bottom: 0.8rem;
     font-size: 1.3rem; /* 20.8px */
     font-weight: 650;
   }
 
+   
   .content blockquote {
     margin: 1.5rem 0;
     padding-left: 1rem;
@@ -267,12 +268,5 @@ body.night .content code {
 
   .content table {
     font-size: 0.9em;
-  }
-}
-
-@media (max-width: 600px) {
-  .content h4 {
-    font-size: 40px !important;
-    line-height: 1 !important;
   }
 }
