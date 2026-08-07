@@ -301,3 +301,74 @@ body.night .content code {
     font-size: 0.9em;
   }
 }
+
+/* =========================================================
+   Typography: Justify + Hyphenation
+   ========================================================= */
+
+/* Базовое состояние — левое выравнивание (работает везде) */
+.content p,
+.content li {
+  text-align: left;
+  hyphens: none;
+}
+
+/* На десктопах — выравнивание по ширине с переносами */
+@media (min-width: 800px) {
+  .content p,
+  .content li {
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    word-spacing: -0.03em;
+    hanging-punctuation: first last;
+    
+    /* Минимальные требования для переноса: 
+       слово ≥ 6 символов, до переноса ≥ 3, после ≥ 2 */
+    -webkit-hyphenate-limit-before: 3;
+    -webkit-hyphenate-limit-after: 2;
+    -webkit-hyphenate-limit-lines: 2;
+    hyphenate-limit-chars: 6 3 2;
+    hyphenate-limit-lines: 2;
+    hyphenate-limit-last: always;
+  }
+}
+
+/* Исключения: никогда не выравниваем по ширине */
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5,
+.content h6,
+.content pre,
+.content code,
+.content table,
+.content .callout-title,
+.content .quote-highlight,
+.content .reading-time,
+.chapter-navigation a {
+  text-align: left;
+  hyphens: none;
+}
+
+/* Цитаты — левое выравнивание всегда (короткие строки) */
+.content blockquote {
+  text-align: left;
+  hyphens: none;
+}
+
+/* Списки на мобильных — тоже по левому краю */
+@media (max-width: 799px) {
+  .content ul,
+  .content ol {
+    text-align: left;
+  }
+}
+
+/* Последний абзац главы — всегда по левому краю
+   (избегаем растянутой последней строки) */
+.content main > p:last-of-type {
+  text-align: left;
+}
