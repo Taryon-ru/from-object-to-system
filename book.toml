@@ -3,12 +3,14 @@ title = "От объекта к системе"
 #subtitle = "Как модель реального мира определяет архитектуру цифровых платформ"
 authors = ["Mikhail.A.I."]
 language = "ru"
-description = "Книга о моделировании инженерных объектов и о том, как Engineering Domain Model определяет архитектуру цифровых платформ."
+description = "Книга о моделировании инженерных объектов и архитектуре цифровых платформ"
 
 [output.html]
 curly-quotes = true
-git-repository-url = "https://github.com/taryon-ru/from-object-to-system"
-edit-url-template = "https://github.com/taryon-ru/from-object-to-system/edit/main/{path}"
+git-repository-url = "https://github.com/Taryon-ru/from-object-to-system"
+edit-url-template = "https://github.com/Taryon-ru/from-object-to-system/edit/main/src/{path}"
+additional-css = ["custom.css"]
+#additional-js = ["navigation.js"]
 
 [build]
 build-dir = "book"
