@@ -86,14 +86,14 @@ body {
 .content h3 {
   margin-top: 2.8rem;
   margin-bottom: 1.25rem;
-  font-size: 1.5625rem; /* 25px */
+  font-size: 1.6875rem !important; /* 27px */
   font-weight: 650;
 }
 
 .content h4 {
   margin-top: 2.2rem;
   margin-bottom: 1rem;
-  font-size: 1.3125rem; /* 21px */
+  font-size: 1.5625rem !important; /* 25px */
   font-weight: 600;
 }
 
@@ -103,7 +103,7 @@ body {
 
 .content p {
   margin-top: 0;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.25rem; /* 20px */
 }
 
 /* ---------------------------------------------------------
