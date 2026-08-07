@@ -12,6 +12,7 @@
 }
 
 :root {
+  font-size: 100%;  /* Переопределяем mdBook: 1rem = 16px снова */
   --book-content-width: 820px;
   --book-text-size: 18px;
   --book-text-line-height: 1.7;
