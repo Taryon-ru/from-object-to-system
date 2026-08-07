@@ -94,21 +94,7 @@ body {
   font-weight: 600;
 }
 
-/*
- * Temporary normalization:
- *
- * At the moment some semantically equivalent sections
- * use different Markdown heading levels.
- *
- * Until the source Markdown is normalized, keep h3/h4
- * visually close enough that the inconsistency is not
- * distracting.
- */
 
-.content h4 {
-  font-size: 1.35rem;
-  font-weight: 650;
-}
 
 /* ---------------------------------------------------------
    Paragraphs
