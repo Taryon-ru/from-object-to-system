@@ -253,7 +253,7 @@ body.night .content code {
     font-weight: 650;
   }
 
-  #content .content h4 {
+  #content h4 {
     margin-top: 1.8rem;
     margin-bottom: 0.8rem;
     font-size: 1.5rem !important; /* 24px */
