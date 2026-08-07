@@ -73,28 +73,28 @@ body {
 .content h1 {
   margin-top: 3.5rem;
   margin-bottom: 2rem;
-  font-size: 2.625rem; /* 42px */
+  font-size: 2rem; /* 32px */
   font-weight: 700;
 }
 
 .content h2 {
   margin-top: 3.5rem;
   margin-bottom: 1.6rem;
-  font-size: 2rem; /* 32px */
+  font-size: 1.75rem; /* 28px */
   font-weight: 700;
 }
 
 .content h3 {
   margin-top: 2.8rem;
   margin-bottom: 1.25rem;
-  font-size: 1.6875rem !important; /* 27px */
+  font-size: 1.5rem; /* 24px */
   font-weight: 650;
 }
 
 .content h4 {
   margin-top: 2.2rem;
   margin-bottom: 1rem;
-  font-size: 1.5625rem !important; /* 25px */
+  font-size: 1.25rem; /* 20px */
   font-weight: 600;
 }
 
