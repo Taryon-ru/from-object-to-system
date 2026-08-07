@@ -9,7 +9,7 @@ description = "Книга о моделировании инженерных о�
 curly-quotes = true
 git-repository-url = "https://github.com/Taryon-ru/from-object-to-system"
 edit-url-template = "https://github.com/Taryon-ru/from-object-to-system/edit/main/src/{path}"
-additional-css = ["custom.css"]
+additional-css = ["src/custom.css"]
 #additional-js = ["navigation.js"]
 
 [build]
