@@ -15,7 +15,7 @@
   font-size: 100%;  /* Переопределяем mdBook: 1rem = 16px снова */
   --book-content-width: 820px;
   --book-text-size: 18px;
-  --book-text-line-height: 1.7;
+  --book-text-line-height: 1.6;
   --book-heading-line-height: 1.2;
 }
 
@@ -129,7 +129,7 @@ acronym {
 
 .content p {
   margin-top: 0;
-  margin-bottom: 1.25rem; /* 20px */
+  margin-bottom: 0.8rem;  /* Было 1.25rem */
 }
 
 /* ---------------------------------------------------------
@@ -138,27 +138,31 @@ acronym {
 
 .content ul,
 .content ol {
-  margin-top: 0.8rem;
-  margin-bottom: 1.4rem;
+  margin-top: 0.6rem;      /* Было 0.8rem */
+  margin-bottom: 1.2rem;   /* Было 1.4rem */
+  padding-left: 1.5rem;    /* Стандартный отступ */
 }
 
 .content li {
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.4rem;
+  line-height: 1.6;
 }
 
 /* ---------------------------------------------------------
    Quotes
    --------------------------------------------------------- */
-
 .content blockquote {
-  margin: 2rem 0;
-  padding: 0.9rem 1.3rem;
-
-  font-size: 1.05em;
-  line-height: 1.65;
-
-  border-left-width: 3px;
+  margin: 1.5rem 0;        /* Было 2rem */
+  padding: 0.8rem 1.2rem;
+  font-size: 1.02em;       /* Было 1.05em */
+  line-height: 1.6;
 }
+
+.callout {
+  margin: 1.5rem 0;        /* Было 1.8rem */
+  padding: 1rem 1.2rem 1rem 3.2rem;
+}
+
 
 /* ---------------------------------------------------------
    Links
