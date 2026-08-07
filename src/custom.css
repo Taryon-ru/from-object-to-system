@@ -38,6 +38,31 @@ body {
   line-height: var(--book-text-line-height);
 }
 
+body {
+  font-feature-settings:
+    "kern" 1,      /* Кернинг между буквами */
+    "liga" 1,      /* Лигатуры (fi, fl) */
+    "calt" 1,      /* Контекстные альтернативы */
+    "ss01" 1,      /* Стилистический набор 1 (альтернативные формы) */
+    "tnum" 0;      /* Пропорциональные цифры для текста */
+}
+
+/* Табличные цифры в таблицах и коде */
+.content table,
+.content code,
+.content pre {
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+/* Капитель для аббревиатур */
+abbr,
+acronym {
+  font-feature-settings: "smcp" 1, "c2sc" 1;
+  letter-spacing: 0.05em;
+}
+
+
+
 /* ---------------------------------------------------------
    Main reading column
    --------------------------------------------------------- */
@@ -228,6 +253,7 @@ body.night .content code {
 
 @media (max-width: 600px) {
   :root {
+    font-size: 100%;  /* Переопределяем mdBook: 1rem = 16px снова */
     --book-text-size: 17px;
   }
 
@@ -238,26 +264,26 @@ body.night .content code {
   .content h1 {
     margin-top: 2.2rem;
     margin-bottom: 1.5rem;
-    font-size: 2.125rem; /* 34px */
+    font-size: 1.75rem; /* 28px */
   }
 
   .content h2 {
     margin-top: 2.5rem;
     margin-bottom: 1.3rem;
-    font-size: 1.6875rem; /* 27px */
+    font-size: 1.5rem; /* 24px */
   }
 
   .content h3 {
     margin-top: 2.2rem;
     margin-bottom: 1rem;
-    font-size: 1.5rem; /* 24px */
+    font-size: 1.25rem; /* 20px */
     font-weight: 650;
   }
 
   #content h4 {
     margin-top: 1.8rem;
     margin-bottom: 0.8rem;
-    font-size: 1.5rem !important; /* 24px */
+    font-size: 1.125rem; /* 18px */
     font-weight: 650;
   }
 
