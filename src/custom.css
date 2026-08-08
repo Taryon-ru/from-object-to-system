@@ -150,6 +150,14 @@ abbr {
 }
 
 
+
+
+
+
+
+
+
+
 /* ---------------------------------------------------------
    Main question
    --------------------------------------------------------- */
@@ -158,16 +166,20 @@ abbr {
   position: relative;
 
   margin: 2.8rem 0 3rem;
-  padding: 1.5rem 1.6rem 1.6rem;
+  padding: 1.2rem 0 1.4rem;
 
-  background: rgba(0, 0, 0, 0.035);
-  border-radius: 8px;
+  background: transparent;
+
+  color: #071a3d;
 
   font-size: 1.08em;
   line-height: 1.6;
+
+  text-shadow:
+    0 0 1px rgba(7, 26, 61, 0.35);
 }
 
-/* Акцентная линия сверху */
+/* Акцентная линия */
 .main-question::before {
   content: "";
 
@@ -177,20 +189,20 @@ abbr {
 
   margin-bottom: 1.1rem;
 
-  background: currentColor;
+  background: #071a3d;
   border-radius: 2px;
+
+  box-shadow:
+    0 0 5px rgba(7, 26, 61, 0.22);
 }
 
-/* Текст вопроса */
-.main-question p {
-  margin: 0;
-}
-
-/* Label: "Главный вопрос" */
+/* Label */
 .main-question strong {
   display: block;
 
   margin-bottom: 0.45rem;
+
+  color: #071a3d;
 
   font-size: 0.78em;
   font-weight: 700;
@@ -198,12 +210,41 @@ abbr {
 
   letter-spacing: 0.08em;
   text-transform: uppercase;
+
+  text-shadow:
+    0 0 1px rgba(7, 26, 61, 0.35);
 }
 
-/* Dark theme */
-body.night .main-question {
-  background: rgba(255, 255, 255, 0.055);
+.main-question p {
+  margin: 0;
 }
+
+
+/* ---------------------------------------------------------
+   Dark theme
+   --------------------------------------------------------- */
+
+body.night .main-question {
+  color: #9bbcff;
+
+  text-shadow:
+    0 0 2px rgba(120, 165, 255, 0.28);
+}
+
+body.night .main-question::before {
+  background: #9bbcff;
+
+  box-shadow:
+    0 0 7px rgba(120, 165, 255, 0.35);
+}
+
+body.night .main-question strong {
+  color: #b5ccff;
+
+  text-shadow:
+    0 0 2px rgba(120, 165, 255, 0.3);
+}
+
 
 
 
