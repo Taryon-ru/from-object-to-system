@@ -3,7 +3,7 @@
 ### Как модель реального мира определяет архитектуру цифровых платформ
 
 
-[📖 Читать книгу онлайн](https://taryon-ru.github.io/from-object-to-system/)
+[📖 Читать книгу онлайн (так удобно)](https://taryon-ru.github.io/from-object-to-system/)
 
 ---
 
