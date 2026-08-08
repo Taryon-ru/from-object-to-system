@@ -149,9 +149,18 @@ abbr {
   line-height: 1.6;
 }
 
-/* =========================================================
+
+
+
+
+
+
+
+
+
+/* ---------------------------------------------------------
    Main question
-   ========================================================= */
+   --------------------------------------------------------- */
 
 .main-question {
   position: relative;
@@ -161,8 +170,7 @@ abbr {
 
   background: transparent;
 
-  /* Светлая тема: тёмно-синий */
-  color: #071a3d;
+  #color: #071a3d;
 
   font-size: 1.08em;
   line-height: 1.6;
@@ -207,38 +215,41 @@ abbr {
   text-transform: uppercase;
 }
 
-/* =========================================================
-   Main question — Dark themes (Coal, Navy, Ayu)
-   Переопределение цветов для тёмных тем mdBook.
-   Используем яркий белый цвет для максимальной читаемости.
-   ========================================================= */
 
-body.coal .main-question,
-body.navy .main-question,
-body.ayu .main-question {
-  color: #ffffff !important;
-  text-shadow: 0 0 2px rgba(255, 255, 255, 0.3) !important;
+/* ---------------------------------------------------------
+   Main question — dark theme
+   --------------------------------------------------------- */
+
+body.night .main-question {
+  #color: #b8ceff;
+
+  text-shadow:
+    0 0 2px rgba(120, 165, 255, 0.3);
 }
 
-body.coal .main-question p,
-body.coal .main-question strong,
-body.navy .main-question p,
-body.navy .main-question strong,
-body.ayu .main-question p,
-body.ayu .main-question strong {
-  color: #ffffff !important;
+body.night .main-question p,
+body.night .main-question strong {
+  #color: #b8ceff;
 }
 
-body.coal .main-question::before,
-body.navy .main-question::before,
-body.ayu .main-question::before {
-  background: #ffffff !important;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4) !important;
+body.night .main-question::before {
+  background: #9bbcff;
+
+  box-shadow:
+    0 0 8px rgba(120, 165, 255, 0.4);
 }
 
-/* =========================================================
+
+
+
+
+
+
+
+
+/* ---------------------------------------------------------
    Source quotations
-   ========================================================= */
+   --------------------------------------------------------- */
 
 .content blockquote {
   margin: 2rem 0;
@@ -264,19 +275,18 @@ body.ayu .main-question::before {
   margin-bottom: 0;
 }
 
-/* Source quotations — Dark themes */
-body.coal .content blockquote,
-body.navy .content blockquote,
-body.ayu .content blockquote {
-  color: #aeb4bd !important;
+/* Dark theme */
+body.night .content blockquote {
+  color: #aeb4bd;
   background: transparent;
   border: none;
-  border-left-color: #737983 !important;
+  border-left-color: #737983;
 }
 
-/* =========================================================
+
+/* ---------------------------------------------------------
    Epigraph
-   ========================================================= */
+   --------------------------------------------------------- */
 
 .content .epigraph {
   max-width: 680px;
@@ -356,59 +366,38 @@ body.ayu .content blockquote {
   margin: 3rem 0;
 }
 
-/* =========================================================
-   Dark theme (Coal, Navy, Ayu)
-   Переопределение цветов для всех элементов в тёмных темах.
-   ========================================================= */
+/* ---------------------------------------------------------
+   Dark theme
+   --------------------------------------------------------- */
 
-body.coal,
-body.navy,
-body.ayu {
+body.night {
   color: #e6e6e6;
 }
 
-body.coal .content,
-body.coal .content p,
-body.coal .content li,
-body.coal .content td,
-body.coal .content th,
-body.navy .content,
-body.navy .content p,
-body.navy .content li,
-body.navy .content td,
-body.navy .content th,
-body.ayu .content,
-body.ayu .content p,
-body.ayu .content li,
-body.ayu .content td,
-body.ayu .content th {
+body.night .content,
+body.night .content p,
+body.night .content li,
+body.night .content td,
+body.night .content th {
   color: #e6e6e6;
 }
 
-body.coal .content h1,
-body.coal .content h2,
-body.coal .content h3,
-body.coal .content h4,
-body.navy .content h1,
-body.navy .content h2,
-body.navy .content h3,
-body.navy .content h4,
-body.ayu .content h1,
-body.ayu .content h2,
-body.ayu .content h3,
-body.ayu .content h4 {
+body.night .content h1,
+body.night .content h2,
+body.night .content h3,
+body.night .content h4 {
   color: #ffffff;
 }
 
-body.coal .content a,
-body.navy .content a,
-body.ayu .content a {
+body.night .content blockquote {
+  color: #d6d6d6;
+}
+
+body.night .content a {
   color: #8ab4f8;
 }
 
-body.coal .content code,
-body.navy .content code,
-body.ayu .content code {
+body.night .content code {
   color: #eeeeee;
 }
 
