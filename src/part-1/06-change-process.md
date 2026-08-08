@@ -65,7 +65,12 @@ MIL-HDBK-61A также вводит понятие Engineering Change Proposal 
 
 ISO 10007:2017 Quality management — Guidelines for configuration management определяет пять процессов управления конфигурацией:
 
-> Configuration management comprises: configuration management planning; configuration identification; configuration change management; configuration status accounting; and configuration audit.
+> Configuration management comprises:
+> - configuration management planning;
+> - configuration identification;
+> - configuration change management;
+> - configuration status accounting;
+> - and configuration audit.
 
 Среди них отдельно выделено configuration change management — управление изменениями конфигурации.
 
