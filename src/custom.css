@@ -1,8 +1,12 @@
 /* =========================================================
    От объекта к системе
    Book typography
+   Адаптация под CSS-переменные mdBook для всех тем
    ========================================================= */
 
+/* ---------------------------------------------------------
+   Шрифт книги
+   --------------------------------------------------------- */
 @font-face {
   font-family: "Golos Text";
   src: url("assets/fonts/GolosText-Variable.woff2") format("woff2");
@@ -11,20 +15,58 @@
   font-display: swap;
 }
 
+/* ---------------------------------------------------------
+   Корневые переменные
+   mdBook использует font-size: 62.5% (1rem = 10px),
+   возвращаем стандартную шкалу, чтобы 1rem = 16px.
+   --------------------------------------------------------- */
 :root {
-  /* mdBook uses 62.5%; restore standard rem scale */
   font-size: 100%;
 
+  /* Типографические константы книги */
   --book-content-width: 820px;
   --book-text-size: 18px;
   --book-text-line-height: 1.65;
   --book-heading-line-height: 1.2;
+
+  /* Кастомные переменные для "Главного вопроса" (светлая тема).
+     Используем свои переменные, чтобы сохранить фирменный синий цвет
+     и корректно переопределить его в тёмных темах. */
+  --mq-fg: #071a3d;                          /* цвет текста */
+  --mq-line: #071a3d;                        /* цвет линии сверху */
+  --mq-text-shadow: rgba(7, 26, 61, 0.35);   /* тень текста */
+  --mq-line-shadow: rgba(7, 26, 61, 0.22);   /* свечение линии */
+
+  /* Кастомные переменные для "Цитат источников" (светлая тема).
+     Серый приглушённый цвет для ссылок на источники. */
+  --src-quote-fg: #6b7280;                   /* цвет текста цитаты */
+  --src-quote-border: #9ca3af;               /* цвет левой полосы */
 }
 
 /* ---------------------------------------------------------
-   Base
+   Переопределение кастомных переменных для тёмных тем mdBook.
+   Встроенные тёмные темы mdBook добавляют на <body> классы:
+   coal, navy, ayu. Перечисляем их все, чтобы блок работал
+   в любой тёмной теме без body.night.
    --------------------------------------------------------- */
+body.coal,
+body.navy,
+body.ayu {
+  --mq-fg: #b8ceff;                            /* светло-синий текст */
+  --mq-line: #9bbcff;                          /* светло-синяя линия */
+  --mq-text-shadow: rgba(120, 165, 255, 0.3);
+  --mq-line-shadow: rgba(120, 165, 255, 0.4);
 
+  --src-quote-fg: #aeb4bd;                     /* светлый серый текст */
+  --src-quote-border: #737983;                 /* тёмная серая полоса */
+}
+
+/* ---------------------------------------------------------
+   Базовая типографика
+   Цвет текста наследуется от html, где mdBook задаёт
+   color: var(--fg). Переменная --fg автоматически меняется
+   в каждой теме, поэтому отдельный блок для тёмной темы не нужен.
+   --------------------------------------------------------- */
 html,
 body {
   font-family:
@@ -39,6 +81,7 @@ body {
   font-size: var(--book-text-size);
   line-height: var(--book-text-line-height);
 
+  /* Включаем кернинг, лигатуры и контекстные замены Golos Text */
   font-feature-settings:
     "kern" 1,
     "liga" 1,
@@ -46,7 +89,7 @@ body {
     "tnum" 0;
 }
 
-/* Табличные цифры в таблицах и коде */
+/* Табличные цифры в таблицах и коде для ровного выравнивания чисел */
 .content table,
 .content code,
 .content pre {
@@ -55,15 +98,14 @@ body {
     "zero" 1;
 }
 
-/* Капитель для аббревиатур */
+/* Лёгкий трекинг для аббревиатур */
 abbr {
   letter-spacing: 0.02em;
 }
 
 /* ---------------------------------------------------------
-   Main reading column
+   Основная колонка чтения
    --------------------------------------------------------- */
-
 .content {
   max-width: var(--book-content-width);
 }
@@ -73,9 +115,10 @@ abbr {
 }
 
 /* ---------------------------------------------------------
-   Headings
+   Заголовки
+   color: inherit наследует var(--fg) от html, поэтому заголовки
+   автоматически подстраиваются под любую тему mdBook.
    --------------------------------------------------------- */
-
 .content h1,
 .content h2,
 .content h3,
@@ -89,54 +132,48 @@ abbr {
 
   line-height: var(--book-heading-line-height);
   letter-spacing: -0.015em;
-  color: inherit;
+  color: inherit;  /* следует за var(--fg) текущей темы */
 }
 
 .content h1 {
   margin-top: 3.5rem;
   margin-bottom: 2rem;
-
-  font-size: 2rem; /* 32px */
+  font-size: 2rem;       /* 32px */
   font-weight: 700;
 }
 
 .content h2 {
   margin-top: 3.5rem;
   margin-bottom: 1.6rem;
-
-  font-size: 1.6875rem; /* 27px */
+  font-size: 1.6875rem;  /* 27px */
   font-weight: 700;
 }
 
 .content h3 {
   margin-top: 2.8rem;
   margin-bottom: 1.25rem;
-
-  font-size: 1.375rem; /* 22px */
+  font-size: 1.375rem;   /* 22px */
   font-weight: 650;
 }
 
 .content h4 {
   margin-top: 2.2rem;
   margin-bottom: 1rem;
-
-  font-size: 1.1875rem; /* 19px */
+  font-size: 1.1875rem;  /* 19px */
   font-weight: 600;
 }
 
 /* ---------------------------------------------------------
-   Paragraphs
+   Абзацы
    --------------------------------------------------------- */
-
 .content p {
   margin-top: 0;
   margin-bottom: 0.8rem;
 }
 
 /* ---------------------------------------------------------
-   Lists
+   Списки
    --------------------------------------------------------- */
-
 .content ul,
 .content ol {
   margin-top: 0.6rem;
@@ -149,19 +186,11 @@ abbr {
   line-height: 1.6;
 }
 
-
-
-
-
-
-
-
-
-
-/* ---------------------------------------------------------
-   Main question
-   --------------------------------------------------------- */
-
+/* =========================================================
+   Главный вопрос (Main question)
+   Цвет берётся из кастомной переменной --mq-fg, которая
+   переопределяется в тёмных темах выше.
+   ========================================================= */
 .main-question {
   position: relative;
 
@@ -170,15 +199,18 @@ abbr {
 
   background: transparent;
 
-  color: #071a3d;
+  /* Цвет следует кастомной переменной, а не жёсткому hex,
+     поэтому корректно меняется во всех темах. */
+  color: var(--mq-fg);
 
   font-size: 1.08em;
   line-height: 1.6;
 
   text-shadow:
-    0 0 1px rgba(7, 26, 61, 0.35);
+    0 0 1px var(--mq-text-shadow);
 }
 
+/* Декоративная линия над блоком */
 .main-question::before {
   content: "";
 
@@ -188,24 +220,25 @@ abbr {
 
   margin-bottom: 1.1rem;
 
-  background: #071a3d;
+  background: var(--mq-line);
   border-radius: 2px;
 
   box-shadow:
-    0 0 5px rgba(7, 26, 61, 0.22);
+    0 0 5px var(--mq-line-shadow);
 }
 
 .main-question p {
   margin: 0;
-  color: inherit;
+  color: inherit;  /* наследует --mq-fg от контейнера */
 }
 
+/* Надзаголовок "Главный вопрос" */
 .main-question strong {
   display: block;
 
   margin-bottom: 0.45rem;
 
-  color: inherit;
+  color: inherit;  /* наследует --mq-fg от контейнера */
 
   font-size: 0.78em;
   font-weight: 700;
@@ -215,47 +248,17 @@ abbr {
   text-transform: uppercase;
 }
 
-
-/* ---------------------------------------------------------
-   Main question — dark theme
-   --------------------------------------------------------- */
-
-body.night .main-question {
-  color: #b8ceff;
-
-  text-shadow:
-    0 0 2px rgba(120, 165, 255, 0.3);
-}
-
-body.night .main-question p,
-body.night .main-question strong {
-  color: #b8ceff;
-}
-
-body.night .main-question::before {
-  background: #9bbcff;
-
-  box-shadow:
-    0 0 8px rgba(120, 165, 255, 0.4);
-}
-
-
-
-
-
-
-
-
-
-/* ---------------------------------------------------------
-   Source quotations
-   --------------------------------------------------------- */
-
+/* =========================================================
+   Цитаты источников (Source quotations)
+   Цвета берутся из кастомных переменных --src-quote-*,
+   которые переопределяются в тёмных темах выше.
+   ========================================================= */
 .content blockquote {
   margin: 2rem 0;
   padding: 0.35rem 0 0.35rem 1.4rem;
 
-  color: #6b7280;
+  /* Приглушённый серый цвет текста цитаты источника */
+  color: var(--src-quote-fg);
   background: transparent;
 
   font-size: 0.95em;
@@ -263,7 +266,7 @@ body.night .main-question::before {
   font-style: italic;
 
   border: none;
-  border-left: 2px solid #9ca3af;
+  border-left: 2px solid var(--src-quote-border);
 }
 
 .content blockquote p {
@@ -275,19 +278,11 @@ body.night .main-question::before {
   margin-bottom: 0;
 }
 
-/* Dark theme */
-body.night .content blockquote {
-  color: #aeb4bd;
-  background: transparent;
-  border: none;
-  border-left-color: #737983;
-}
-
-
-/* ---------------------------------------------------------
-   Epigraph
-   --------------------------------------------------------- */
-
+/* =========================================================
+   Эпиграф
+   color: inherit наследует var(--fg), поэтому эпиграф
+   автоматически адаптивен во всех темах.
+   ========================================================= */
 .content .epigraph {
   max-width: 680px;
   margin: 3rem auto 4rem;
@@ -311,28 +306,30 @@ body.night .content blockquote {
   font-style: normal;
 }
 
-/* ---------------------------------------------------------
-   Callouts
-   --------------------------------------------------------- */
-
+/* =========================================================
+   Callout-блоки
+   ========================================================= */
 .callout {
   margin: 1.5rem 0;
   padding: 1rem 1.2rem 1rem 3.2rem;
 }
 
-/* ---------------------------------------------------------
-   Links
-   --------------------------------------------------------- */
-
+/* =========================================================
+   Ссылки
+   Цвет наследуется от переменной mdBook --links, которая
+   уже определена для каждой темы. Добавляем только
+   типографические детали подчёркивания.
+   ========================================================= */
 .content a {
   text-decoration-thickness: 1px;
   text-underline-offset: 0.15em;
 }
 
-/* ---------------------------------------------------------
-   Code
-   --------------------------------------------------------- */
-
+/* =========================================================
+   Код
+   Цвет и шрифт следуют переменным mdBook --inline-code-color
+   и --mono-font, определённым в variables.css темы.
+   ========================================================= */
 .content code {
   font-size: 0.88em;
 }
@@ -343,10 +340,11 @@ body.night .content blockquote {
   overflow-x: auto;
 }
 
-/* ---------------------------------------------------------
-   Tables
-   --------------------------------------------------------- */
-
+/* =========================================================
+   Таблицы
+   Цвета границ и фона следуют переменным mdBook
+   --table-border-color, --table-header-bg и т.д.
+   ========================================================= */
 .content table {
   width: 100%;
   margin: 1.8rem 0;
@@ -358,53 +356,16 @@ body.night .content blockquote {
   padding: 0.7rem 0.8rem;
 }
 
-/* ---------------------------------------------------------
-   Horizontal rules
-   --------------------------------------------------------- */
-
+/* =========================================================
+   Горизонтальные разделители
+   ========================================================= */
 .content hr {
   margin: 3rem 0;
 }
 
-/* ---------------------------------------------------------
-   Dark theme
-   --------------------------------------------------------- */
-
-body.night {
-  color: #e6e6e6;
-}
-
-body.night .content,
-body.night .content p,
-body.night .content li,
-body.night .content td,
-body.night .content th {
-  color: #e6e6e6;
-}
-
-body.night .content h1,
-body.night .content h2,
-body.night .content h3,
-body.night .content h4 {
-  color: #ffffff;
-}
-
-body.night .content blockquote {
-  color: #d6d6d6;
-}
-
-body.night .content a {
-  color: #8ab4f8;
-}
-
-body.night .content code {
-  color: #eeeeee;
-}
-
-/* ---------------------------------------------------------
-   Mobile
-   --------------------------------------------------------- */
-
+/* =========================================================
+   Мобильная адаптация
+   ========================================================= */
 @media (max-width: 600px) {
   :root {
     font-size: 100%;
@@ -418,29 +379,25 @@ body.night .content code {
   .content h1 {
     margin-top: 2.2rem;
     margin-bottom: 1.5rem;
-
-    font-size: 1.875rem; /* 30px */
+    font-size: 1.875rem;  /* 30px */
   }
 
   .content h2 {
     margin-top: 2.5rem;
     margin-bottom: 1.3rem;
-
-    font-size: 1.625rem; /* 26px */
+    font-size: 1.625rem;  /* 26px */
   }
 
   .content h3 {
     margin-top: 2.2rem;
     margin-bottom: 1rem;
-
-    font-size: 1.375rem; /* 22px */
+    font-size: 1.375rem;  /* 22px */
     font-weight: 650;
   }
 
   .content h4 {
     margin-top: 1.8rem;
     margin-bottom: 0.8rem;
-
     font-size: 1.1875rem; /* 19px */
     line-height: 1.3;
     font-weight: 650;
@@ -454,7 +411,6 @@ body.night .content code {
   .content .epigraph {
     margin: 2.5rem auto 3rem;
     padding: 0 0.5rem;
-
     font-size: 1.08em;
   }
 
@@ -464,20 +420,17 @@ body.night .content code {
 }
 
 /* =========================================================
-   Typography: Justify + Hyphenation
+   Выравнивание по ширине + переносы (только на десктопе)
    ========================================================= */
 
-/* Базовое состояние — левое выравнивание */
+/* Базовое состояние — выравнивание по левому краю */
 .content p,
 .content li {
   text-align: left;
   hyphens: none;
 }
 
-/* ---------------------------------------------------------
-   Desktop reading typography
-   --------------------------------------------------------- */
-
+/* На широких экранах включаем justify и автоматические переносы */
 @media (min-width: 800px) {
   .content p,
   .content li {
@@ -488,6 +441,7 @@ body.night .content code {
 
     hanging-punctuation: first last;
 
+    /* Ограничения переносов для аккуратного вида */
     -webkit-hyphenate-limit-before: 3;
     -webkit-hyphenate-limit-after: 2;
     -webkit-hyphenate-limit-lines: 2;
@@ -498,10 +452,7 @@ body.night .content code {
   }
 }
 
-/* ---------------------------------------------------------
-   Elements that should never be justified
-   --------------------------------------------------------- */
-
+/* Элементы, которые никогда не выравниваются по ширине */
 .content h1,
 .content h2,
 .content h3,
@@ -519,13 +470,20 @@ body.night .content code {
   hyphens: none;
 }
 
-/* Цитаты — левое выравнивание */
+/* Цитаты источников — всегда по левому краю */
 .content blockquote {
   text-align: left;
   hyphens: none;
 }
 
-/* Списки на мобильных — левое выравнивание */
+/* Эпиграф — по центру, без justify */
+.content .epigraph,
+.content .epigraph p {
+  text-align: center;
+  hyphens: none;
+}
+
+/* На мобильных списки всегда по левому краю */
 @media (max-width: 799px) {
   .content ul,
   .content ol {
@@ -533,7 +491,8 @@ body.night .content code {
   }
 }
 
-/* Последний абзац главы — левое выравнивание */
+/* Последний абзац главы — по левому краю, чтобы избежать
+   растянутой последней строки */
 .content main > p:last-of-type {
   text-align: left;
 }
