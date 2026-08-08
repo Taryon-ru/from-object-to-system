@@ -12,10 +12,12 @@
 }
 
 :root {
-  font-size: 100%;  /* Переопределяем mdBook: 1rem = 16px снова */
+  /* mdBook uses 62.5%; restore standard rem scale */
+  font-size: 100%;
+
   --book-content-width: 820px;
   --book-text-size: 18px;
-  --book-text-line-height: 1.6;
+  --book-text-line-height: 1.65;
   --book-heading-line-height: 1.2;
 }
 
@@ -36,32 +38,27 @@ body {
 body {
   font-size: var(--book-text-size);
   line-height: var(--book-text-line-height);
-}
 
-body {
   font-feature-settings:
-    "kern" 1,      /* Кернинг между буквами */
-    "liga" 1,      /* Лигатуры (fi, fl) */
-    "calt" 1,      /* Контекстные альтернативы */
-    "ss01" 1,      /* Стилистический набор 1 (альтернативные формы) */
-    "tnum" 0;      /* Пропорциональные цифры для текста */
+    "kern" 1,
+    "liga" 1,
+    "calt" 1,
+    "tnum" 0;
 }
 
 /* Табличные цифры в таблицах и коде */
 .content table,
 .content code,
 .content pre {
-  font-feature-settings: "tnum" 1, "zero" 1;
+  font-feature-settings:
+    "tnum" 1,
+    "zero" 1;
 }
 
 /* Капитель для аббревиатур */
-abbr,
-acronym {
-  font-feature-settings: "smcp" 1, "c2sc" 1;
-  letter-spacing: 0.05em;
+abbr {
+  letter-spacing: 0.02em;
 }
-
-
 
 /* ---------------------------------------------------------
    Main reading column
@@ -90,7 +87,7 @@ acronym {
     "Segoe UI",
     sans-serif;
 
-  line-height: 1.2;
+  line-height: var(--book-heading-line-height);
   letter-spacing: -0.015em;
   color: inherit;
 }
@@ -98,28 +95,32 @@ acronym {
 .content h1 {
   margin-top: 3.5rem;
   margin-bottom: 2rem;
-  font-size: 1.75rem; /* 28px */
+
+  font-size: 2rem; /* 32px */
   font-weight: 700;
 }
 
 .content h2 {
   margin-top: 3.5rem;
   margin-bottom: 1.6rem;
-  font-size: 1.5rem; /* 24px */
+
+  font-size: 1.6875rem; /* 27px */
   font-weight: 700;
 }
 
 .content h3 {
   margin-top: 2.8rem;
   margin-bottom: 1.25rem;
-  font-size: 1.25rem; /* 20px */
+
+  font-size: 1.375rem; /* 22px */
   font-weight: 650;
 }
 
 .content h4 {
   margin-top: 2.2rem;
   margin-bottom: 1rem;
-  font-size: 1.125rem; /* 18px */
+
+  font-size: 1.1875rem; /* 19px */
   font-weight: 600;
 }
 
@@ -129,7 +130,7 @@ acronym {
 
 .content p {
   margin-top: 0;
-  margin-bottom: 0.8rem;  /* Было 1.25rem */
+  margin-bottom: 0.8rem;
 }
 
 /* ---------------------------------------------------------
@@ -138,9 +139,9 @@ acronym {
 
 .content ul,
 .content ol {
-  margin-top: 0.6rem;      /* Было 0.8rem */
-  margin-bottom: 1.2rem;   /* Было 1.4rem */
-  padding-left: 1.5rem;    /* Стандартный отступ */
+  margin-top: 0.6rem;
+  margin-bottom: 1.2rem;
+  padding-left: 1.5rem;
 }
 
 .content li {
@@ -151,18 +152,61 @@ acronym {
 /* ---------------------------------------------------------
    Quotes
    --------------------------------------------------------- */
+
 .content blockquote {
-  margin: 1.5rem 0;        /* Было 2rem */
-  padding: 0.8rem 1.2rem;
-  font-size: 1.02em;       /* Было 1.05em */
-  line-height: 1.6;
+  margin: 2rem 0;
+  padding: 0.4rem 0 0.4rem 1.5rem;
+
+  font-size: 1.02em;
+  line-height: 1.65;
+  font-style: normal;
+
+  border-left: 2px solid;
 }
+
+.content blockquote p {
+  margin-bottom: 0.8rem;
+}
+
+.content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------------------------------------------------------
+   Epigraph
+   --------------------------------------------------------- */
+
+.content .epigraph {
+  max-width: 680px;
+  margin: 3rem auto 4rem;
+  padding: 0;
+
+  font-size: 1.15em;
+  line-height: 1.6;
+  font-style: italic;
+  text-align: center;
+}
+
+.content .epigraph p {
+  margin-bottom: 0.5rem;
+}
+
+.content .epigraph cite {
+  display: block;
+  margin-top: 0.75rem;
+
+  font-size: 0.9em;
+  font-style: normal;
+}
+
+/* ---------------------------------------------------------
+   Callouts
+   --------------------------------------------------------- */
 
 .callout {
-  margin: 1.5rem 0;        /* Было 1.8rem */
+  margin: 1.5rem 0;
   padding: 1rem 1.2rem 1rem 3.2rem;
 }
-
 
 /* ---------------------------------------------------------
    Links
@@ -214,12 +258,6 @@ acronym {
    Dark theme
    --------------------------------------------------------- */
 
-/*
- * mdBook sets the theme using body classes.
- * Explicitly define text colors here so that the book
- * remains readable when dark mode is selected.
- */
-
 body.night {
   color: #e6e6e6;
 }
@@ -257,7 +295,7 @@ body.night .content code {
 
 @media (max-width: 600px) {
   :root {
-    font-size: 100%;  /* Переопределяем mdBook: 1rem = 16px снова */
+    font-size: 100%;
     --book-text-size: 17px;
   }
 
@@ -268,33 +306,44 @@ body.night .content code {
   .content h1 {
     margin-top: 2.2rem;
     margin-bottom: 1.5rem;
-    font-size: 1.75rem; /* 28px */
+
+    font-size: 1.875rem; /* 30px */
   }
 
   .content h2 {
     margin-top: 2.5rem;
     margin-bottom: 1.3rem;
-    font-size: 1.5rem; /* 24px */
+
+    font-size: 1.625rem; /* 26px */
   }
 
   .content h3 {
     margin-top: 2.2rem;
     margin-bottom: 1rem;
-    font-size: 1.25rem; /* 20px */
+
+    font-size: 1.375rem; /* 22px */
     font-weight: 650;
   }
 
-  #content h4 {
+  .content h4 {
     margin-top: 1.8rem;
     margin-bottom: 0.8rem;
-    font-size: 1.125rem; /* 18px */
+
+    font-size: 1.1875rem; /* 19px */
+    line-height: 1.3;
     font-weight: 650;
   }
 
-   
   .content blockquote {
     margin: 1.5rem 0;
-    padding-left: 1rem;
+    padding: 0.3rem 0 0.3rem 1rem;
+  }
+
+  .content .epigraph {
+    margin: 2.5rem auto 3rem;
+    padding: 0 0.5rem;
+
+    font-size: 1.08em;
   }
 
   .content table {
@@ -306,14 +355,17 @@ body.night .content code {
    Typography: Justify + Hyphenation
    ========================================================= */
 
-/* Базовое состояние — левое выравнивание (работает везде) */
+/* Базовое состояние — левое выравнивание */
 .content p,
 .content li {
   text-align: left;
   hyphens: none;
 }
 
-/* На десктопах — выравнивание по ширине с переносами */
+/* ---------------------------------------------------------
+   Desktop reading typography
+   --------------------------------------------------------- */
+
 @media (min-width: 800px) {
   .content p,
   .content li {
@@ -321,21 +373,23 @@ body.night .content code {
     hyphens: auto;
     -webkit-hyphens: auto;
     -moz-hyphens: auto;
-    word-spacing: -0.03em;
+
     hanging-punctuation: first last;
-    
-    /* Минимальные требования для переноса: 
-       слово ≥ 6 символов, до переноса ≥ 3, после ≥ 2 */
+
     -webkit-hyphenate-limit-before: 3;
     -webkit-hyphenate-limit-after: 2;
     -webkit-hyphenate-limit-lines: 2;
+
     hyphenate-limit-chars: 6 3 2;
     hyphenate-limit-lines: 2;
     hyphenate-limit-last: always;
   }
 }
 
-/* Исключения: никогда не выравниваем по ширине */
+/* ---------------------------------------------------------
+   Elements that should never be justified
+   --------------------------------------------------------- */
+
 .content h1,
 .content h2,
 .content h3,
@@ -353,13 +407,13 @@ body.night .content code {
   hyphens: none;
 }
 
-/* Цитаты — левое выравнивание всегда (короткие строки) */
+/* Цитаты — левое выравнивание */
 .content blockquote {
   text-align: left;
   hyphens: none;
 }
 
-/* Списки на мобильных — тоже по левому краю */
+/* Списки на мобильных — левое выравнивание */
 @media (max-width: 799px) {
   .content ul,
   .content ol {
@@ -367,8 +421,7 @@ body.night .content code {
   }
 }
 
-/* Последний абзац главы — всегда по левому краю
-   (избегаем растянутой последней строки) */
+/* Последний абзац главы — левое выравнивание */
 .content main > p:last-of-type {
   text-align: left;
 }
