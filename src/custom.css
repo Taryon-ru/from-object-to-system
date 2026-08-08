@@ -234,8 +234,7 @@ body.night .main-question strong {
 body.night .main-question::before {
   background: #9bbcff;
 
-  box-shadow:
-    0 0 8px rgba(120, 165, 255, 0.4);
+  #box-shadow: 0 0 8px rgba(120, 165, 255, 0.4);
 }
 
 
