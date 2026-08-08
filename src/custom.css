@@ -191,8 +191,7 @@ abbr {
   background: #071a3d;
   border-radius: 2px;
 
-  box-shadow:
-    0 0 5px rgba(7, 26, 61, 0.22);
+  #box-shadow: 0 0 5px rgba(7, 26, 61, 0.22);
 }
 
 .main-question p {
