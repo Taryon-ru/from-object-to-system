@@ -1,31 +1,92 @@
-// Busuanzi — анонимный счётчик без регистрации
-(function() {
-  // Добавляем скрипт Busuanzi
-  const script = document.createElement('script');
+// Busuanzi — анонимная статистика книги
+(() => {
+  const SCRIPT_ID = "busuanzi-script";
+  const FOOTER_CLASS = "book-statistics";
+
+  if (document.getElementById(SCRIPT_ID)) {
+    return;
+  }
+
+  const script = document.createElement("script");
+
+  script.id = SCRIPT_ID;
   script.async = true;
-  script.src = '//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js';
-  document.head.appendChild(script);
-  
-  // Ждём загрузки скрипта
-  script.onload = function() {
-    // Добавляем счётчики в футер
-    const footer = document.createElement('div');
-    footer.style.cssText = 'text-align: center; margin: 2rem 0; padding-top: 1rem; border-top: 1px solid var(--table-border-color); font-size: 0.85rem; opacity: 0.7;';
-    
-    footer.innerHTML = `
-      <span id="busuanzi_container_site_pv">
-        👁 <span id="busuanzi_value_site_pv"></span> просмотров
+  script.src =
+    "https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
+
+  script.onload = () => {
+    const content = document.querySelector(".content");
+
+    if (!content || content.querySelector(`.${FOOTER_CLASS}`)) {
+      return;
+    }
+
+    const statistics = document.createElement("div");
+
+    statistics.className = FOOTER_CLASS;
+
+    statistics.innerHTML = `
+      <span id="busuanzi_container_site_pv" hidden>
+        <span aria-hidden="true">👁</span>
+        <span id="busuanzi_value_site_pv"></span>
+        просмотров
       </span>
-      &nbsp;|&nbsp;
-      <span id="busuanzi_container_site_uv">
-        👤 <span id="busuanzi_value_site_uv"></span> читателей
+
+      <span class="book-statistics-separator" aria-hidden="true">
+        ·
       </span>
-      &nbsp;|&nbsp;
-      <span id="busuanzi_container_page_pv">
-        📖 Эта глава: <span id="busuanzi_value_page_pv"></span> просмотров
+
+      <span id="busuanzi_container_site_uv" hidden>
+        <span aria-hidden="true">👤</span>
+        <span id="busuanzi_value_site_uv"></span>
+        посетителей сегодня
+      </span>
+
+      <span class="book-statistics-separator" aria-hidden="true">
+        ·
+      </span>
+
+      <span id="busuanzi_container_page_pv" hidden>
+        <span aria-hidden="true">📖</span>
+        эта глава:
+        <span id="busuanzi_value_page_pv"></span>
       </span>
     `;
-    
-    document.querySelector('.content').appendChild(footer);
+
+    content.appendChild(statistics);
+
+    // Busuanzi заполняет значения асинхронно.
+    // Показываем только контейнеры, для которых значение действительно появилось.
+    const containers = statistics.querySelectorAll(
+      '[id^="busuanzi_container_"]',
+    );
+
+    containers.forEach((container) => {
+      const value = container.querySelector('[id^="busuanzi_value_"]');
+
+      if (!value) {
+        return;
+      }
+
+      const observer = new MutationObserver(() => {
+        if (value.textContent?.trim()) {
+          container.hidden = false;
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(value, {
+        childList: true,
+        characterData: true,
+        subtree: true,
+      });
+    });
   };
+
+  script.onerror = () => {
+    // Статистика не должна влиять на работу книги.
+    script.remove();
+  };
+
+  document.head.appendChild(script);
 })();
