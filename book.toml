@@ -12,6 +12,7 @@ edit-url-template = "https://github.com/Taryon-ru/from-object-to-system/edit/mai
 additional-css = ["src/custom.css"]
 #additional-js = ["navigation.js"]
 no-section-label = true
+additional-js = ["src/theme/analytics.js"]
 
 [build]
 build-dir = "book"
