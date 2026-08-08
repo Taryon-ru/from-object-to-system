@@ -149,33 +149,69 @@ abbr {
   line-height: 1.6;
 }
 
+
 /* ---------------------------------------------------------
    Main question
    --------------------------------------------------------- */
 
 .main-question {
-  margin: 2rem 0 2.5rem;
-  padding: 1rem 1.25rem;
+  position: relative;
+
+  margin: 2.8rem 0 3rem;
+  padding: 1.5rem 1.6rem 1.6rem;
 
   background: rgba(0, 0, 0, 0.035);
-  border-radius: 6px;
+  border-radius: 8px;
 
-  font-size: 1.05em;
+  font-size: 1.08em;
   line-height: 1.6;
 }
 
+/* Акцентная линия сверху */
+.main-question::before {
+  content: "";
+
+  display: block;
+  width: 3rem;
+  height: 3px;
+
+  margin-bottom: 1.1rem;
+
+  background: currentColor;
+  border-radius: 2px;
+}
+
+/* Текст вопроса */
 .main-question p {
   margin: 0;
 }
 
+/* Label: "Главный вопрос" */
 .main-question strong {
+  display: block;
+
+  margin-bottom: 0.45rem;
+
+  font-size: 0.78em;
   font-weight: 700;
+  line-height: 1.3;
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 /* Dark theme */
 body.night .main-question {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.055);
 }
+
+
+
+
+
+
+
+
 
 
 /* ---------------------------------------------------------
