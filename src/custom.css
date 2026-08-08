@@ -179,7 +179,6 @@ abbr {
     0 0 1px rgba(7, 26, 61, 0.35);
 }
 
-/* Акцентная линия */
 .main-question::before {
   content: "";
 
@@ -196,13 +195,17 @@ abbr {
     0 0 5px rgba(7, 26, 61, 0.22);
 }
 
-/* Label */
+.main-question p {
+  margin: 0;
+  color: inherit;
+}
+
 .main-question strong {
   display: block;
 
   margin-bottom: 0.45rem;
 
-  color: #071a3d;
+  color: inherit;
 
   font-size: 0.78em;
   font-weight: 700;
@@ -210,42 +213,31 @@ abbr {
 
   letter-spacing: 0.08em;
   text-transform: uppercase;
-
-  text-shadow:
-    0 0 1px rgba(7, 26, 61, 0.35);
-}
-
-.main-question p {
-  margin: 0;
 }
 
 
 /* ---------------------------------------------------------
-   Dark theme
+   Main question — dark theme
    --------------------------------------------------------- */
 
 body.night .main-question {
-  color: #9bbcff;
+  color: #b8ceff;
 
   text-shadow:
-    0 0 2px rgba(120, 165, 255, 0.28);
+    0 0 2px rgba(120, 165, 255, 0.3);
+}
+
+body.night .main-question p,
+body.night .main-question strong {
+  color: #b8ceff;
 }
 
 body.night .main-question::before {
   background: #9bbcff;
 
   box-shadow:
-    0 0 7px rgba(120, 165, 255, 0.35);
+    0 0 8px rgba(120, 165, 255, 0.4);
 }
-
-body.night .main-question strong {
-  color: #b5ccff;
-
-  text-shadow:
-    0 0 2px rgba(120, 165, 255, 0.3);
-}
-
-
 
 
 
