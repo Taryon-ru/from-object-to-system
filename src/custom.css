@@ -193,6 +193,7 @@ body.night .main-question {
   line-height: 1.65;
   font-style: italic;
 
+  border: none;
   border-left: 2px solid #9ca3af;
 }
 
@@ -209,11 +210,9 @@ body.night .main-question {
 body.night .content blockquote {
   color: #aeb4bd;
   background: transparent;
+  border: none;
   border-left-color: #737983;
 }
-
-
-
 
 
 /* ---------------------------------------------------------
