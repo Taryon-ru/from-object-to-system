@@ -150,27 +150,71 @@ abbr {
 }
 
 /* ---------------------------------------------------------
-   Quotes
+   Main question
+   --------------------------------------------------------- */
+
+.main-question {
+  margin: 2rem 0 2.5rem;
+  padding: 1rem 1.25rem;
+
+  background: rgba(0, 0, 0, 0.035);
+  border-radius: 6px;
+
+  font-size: 1.05em;
+  line-height: 1.6;
+}
+
+.main-question p {
+  margin: 0;
+}
+
+.main-question strong {
+  font-weight: 700;
+}
+
+/* Dark theme */
+body.night .main-question {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+
+/* ---------------------------------------------------------
+   Source quotations
    --------------------------------------------------------- */
 
 .content blockquote {
   margin: 2rem 0;
-  padding: 0.4rem 0 0.4rem 1.5rem;
+  padding: 0.35rem 0 0.35rem 1.4rem;
 
-  font-size: 1.02em;
+  color: #6b7280;
+  background: transparent;
+
+  font-size: 0.95em;
   line-height: 1.65;
-  font-style: normal;
+  font-style: italic;
 
-  border-left: 2px solid;
+  border-left: 2px solid #9ca3af;
 }
 
 .content blockquote p {
-  margin-bottom: 0.8rem;
+  margin-top: 0;
+  margin-bottom: 0.7rem;
 }
 
 .content blockquote p:last-child {
   margin-bottom: 0;
 }
+
+/* Dark theme */
+body.night .content blockquote {
+  color: #aeb4bd;
+  background: transparent;
+  border-left-color: #737983;
+}
+
+
+
+
 
 /* ---------------------------------------------------------
    Epigraph
