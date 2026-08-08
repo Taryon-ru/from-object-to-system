@@ -188,64 +188,92 @@ abbr {
 
 /* =========================================================
    Главный вопрос (Main question)
-   Цвет берётся из кастомной переменной --mq-fg, которая
-   переопределяется в тёмных темах выше.
+   Универсальное решение для всех тем mdBook
    ========================================================= */
+
 .main-question {
   position: relative;
-
   margin: 2.8rem 0 3rem;
   padding: 1.2rem 0 1.4rem;
-
   background: transparent;
 
-  /* Цвет следует кастомной переменной, а не жёсткому hex,
-     поэтому корректно меняется во всех темах. */
-  color: var(--mq-fg);
+  /* Светлая тема по умолчанию */
+  color: #071a3d;
 
   font-size: 1.08em;
   line-height: 1.6;
-
-  text-shadow:
-    0 0 1px var(--mq-text-shadow);
+  text-shadow: 0 0 1px rgba(7, 26, 61, 0.35);
 }
 
-/* Декоративная линия над блоком */
 .main-question::before {
   content: "";
-
   display: block;
   width: 3rem;
   height: 3px;
-
   margin-bottom: 1.1rem;
-
-  background: var(--mq-line);
+  background: #071a3d;
   border-radius: 2px;
-
-  box-shadow:
-    0 0 5px var(--mq-line-shadow);
+  box-shadow: 0 0 5px rgba(7, 26, 61, 0.22);
 }
 
 .main-question p {
   margin: 0;
-  color: inherit;  /* наследует --mq-fg от контейнера */
+  color: inherit;
 }
 
-/* Надзаголовок "Главный вопрос" */
 .main-question strong {
   display: block;
-
   margin-bottom: 0.45rem;
-
-  color: inherit;  /* наследует --mq-fg от контейнера */
-
+  color: inherit;
   font-size: 0.78em;
   font-weight: 700;
   line-height: 1.3;
-
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------
+   Тёмная тема — переопределение цветов
+   Покрываем ВСЕ возможные классы тёмных тем mdBook
+   --------------------------------------------------------- */
+
+/* Coal — самая популярная тёмная тема */
+body.coal .main-question,
+body.navy .main-question,
+body.ayu .main-question,
+/* Возможные альтернативные имена */
+body.dark .main-question,
+body.night .main-question,
+body.theme-dark .main-question,
+html[data-theme="dark"] body .main-question,
+html.dark body .main-question {
+  color: #b8ceff !important;
+  text-shadow: 0 0 2px rgba(120, 165, 255, 0.3) !important;
+}
+
+body.coal .main-question::before,
+body.navy .main-question::before,
+body.ayu .main-question::before,
+body.dark .main-question::before,
+body.night .main-question::before,
+body.theme-dark .main-question::before,
+html[data-theme="dark"] body .main-question::before,
+html.dark body .main-question::before {
+  background: #9bbcff !important;
+  box-shadow: 0 0 8px rgba(120, 165, 255, 0.4) !important;
+}
+
+body.coal .main-question p,
+body.coal .main-question strong,
+body.navy .main-question p,
+body.navy .main-question strong,
+body.ayu .main-question p,
+body.ayu .main-question strong,
+body.dark .main-question p,
+body.dark .main-question strong,
+body.night .main-question p,
+body.night .main-question strong {
+  color: #b8ceff !important;
 }
 
 /* =========================================================
