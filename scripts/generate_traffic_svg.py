@@ -11,13 +11,16 @@ ROOT = Path(__file__).resolve().parent.parent
 SNAPSHOTS = ROOT / "traffic" / "snapshots"
 CHARTS = ROOT / "traffic" / "charts"
 
+# ─────────────────────────────────────────────
+# Компактные размеры (280×120)
+# ─────────────────────────────────────────────
 WIDTH = 280
-HEIGHT = 100
+HEIGHT = 120
 
-PADDING_LEFT = 48
-PADDING_RIGHT = 16
-PADDING_TOP = 36
-PADDING_BOTTOM = 32
+PADDING_LEFT = 36      # место для цифр оси Y
+PADDING_RIGHT = 10
+PADDING_TOP = 22       # место для заголовка
+PADDING_BOTTOM = 18    # место для дат
 
 CHART_WIDTH = WIDTH - PADDING_LEFT - PADDING_RIGHT
 CHART_HEIGHT = HEIGHT - PADDING_TOP - PADDING_BOTTOM
