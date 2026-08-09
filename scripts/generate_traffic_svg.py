@@ -11,13 +11,13 @@ ROOT = Path(__file__).resolve().parent.parent
 SNAPSHOTS = ROOT / "traffic" / "snapshots"
 CHARTS = ROOT / "traffic" / "charts"
 
-WIDTH = 900
-HEIGHT = 300
+WIDTH = 560
+HEIGHT = 200
 
-PADDING_LEFT = 60
-PADDING_RIGHT = 24
-PADDING_TOP = 48
-PADDING_BOTTOM = 42
+PADDING_LEFT = 48
+PADDING_RIGHT = 16
+PADDING_TOP = 36
+PADDING_BOTTOM = 32
 
 CHART_WIDTH = WIDTH - PADDING_LEFT - PADDING_RIGHT
 CHART_HEIGHT = HEIGHT - PADDING_TOP - PADDING_BOTTOM
@@ -111,12 +111,12 @@ def create_chart(
 >
   <style>
     .title {{
-      font: 600 18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font: 600 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       fill: #1f2937;
     }}
 
     .label {{
-      font: 400 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font: 400 10px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       fill: #6b7280;
     }}
 
@@ -162,7 +162,7 @@ def create_chart(
 
   <text
     x="{PADDING_LEFT}"
-    y="28"
+    y="22"
     class="title"
   >{escape(title)}</text>
 
