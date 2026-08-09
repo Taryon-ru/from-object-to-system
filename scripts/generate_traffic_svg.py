@@ -19,8 +19,8 @@ HEIGHT = 120
 
 PADDING_LEFT = 36      # место для цифр оси Y
 PADDING_RIGHT = 10
-PADDING_TOP = 22       # место для заголовка
-PADDING_BOTTOM = 18    # место для дат
+PADDING_TOP = 24       # место для заголовка
+PADDING_BOTTOM = 22    # место для дат
 
 CHART_WIDTH = WIDTH - PADDING_LEFT - PADDING_RIGHT
 CHART_HEIGHT = HEIGHT - PADDING_TOP - PADDING_BOTTOM
