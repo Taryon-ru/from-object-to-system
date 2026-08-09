@@ -5,6 +5,28 @@
 
 [📖 Читать книгу онлайн (так удобно)](https://taryon-ru.github.io/from-object-to-system/)
 
+
+#### Статистика
+
+<div align="center">
+
+<img
+  src="https://raw.githubusercontent.com/Taryon-ru/from-object-to-system/traffic-data/traffic/charts/views.svg"
+  alt="GitHub views"
+  width="700"
+/>
+
+<img
+  src="https://raw.githubusercontent.com/Taryon-ru/from-object-to-system/traffic-data/traffic/charts/clones.svg"
+  alt="GitHub clones"
+  width="700"
+/>
+
+</div>
+
+> Статистика собирается автоматически из GitHub Traffic API.
+> Данные сохраняются ежедневно в репозитории проекта.
+
 ---
 
 ## О книге
