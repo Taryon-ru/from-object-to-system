@@ -34,7 +34,7 @@ jobs:
 
       - name: Collect GitHub traffic
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.TRAFFIC_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
