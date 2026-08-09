@@ -1,5 +1,4 @@
-# В ветке traffic-data
-cat > README.md << 'EOF'
+
 # Traffic data
 
 Автоматическая статистика репозитория `taryon-ru/from-object-to-system`.
