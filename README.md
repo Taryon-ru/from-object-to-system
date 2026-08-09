@@ -8,28 +8,19 @@
 
 #### Статистика
 
-<table align="center">
-  <tr>
-    <td align="center" width="50%">
-      <img
-        src="https://raw.githubusercontent.com/taryon-ru/from-object-to-system/traffic-data/traffic/charts/views.svg"
-        alt="GitHub views"
-        width="100%"
-      />
-    </td>
-    <td align="center" width="50%">
-      <img
-        src="https://raw.githubusercontent.com/taryon-ru/from-object-to-system/traffic-data/traffic/charts/clones.svg"
-        alt="GitHub clones"
-        width="100%"
-      />
-    </td>
-  </tr>
-</table>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+  <img
+    src="https://raw.githubusercontent.com/taryon-ru/from-object-to-system/traffic-data/traffic/charts/views.svg"
+    alt="GitHub views"
+  />
+  <img
+    src="https://raw.githubusercontent.com/taryon-ru/from-object-to-system/traffic-data/traffic/charts/clones.svg"
+    alt="GitHub clones"
+  />
+</div>
 
 > Статистика собирается автоматически из GitHub Traffic API.
-> Данные сохраняются ежедневно в ветке [`traffic-data`](https://github.com/taryon-ru/from-object-to-system/tree/traffic-data).
-
+> Данные сохраняются ежедневно в ветке [traffic-data](https://github.com/taryon-ru/from-object-to-system/tree/traffic-data).
 ---
 
 ## О книге
