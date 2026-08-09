@@ -27,11 +27,23 @@ jobs:
           fetch-depth: 1
 
       # ─────────────────────────────────────────────
-      # Шаг 2: Собираем данные API во временную папку
+      # Шаг 2: Определяем временную директорию
       # ─────────────────────────────────────────────
-      - name: Prepare temp directory
-        run: mkdir -p .traffic-tmp/snapshots
+      - name: Set temp directory
+        id: temp
+        shell: bash
+        run: |
+          echo "dir=${RUNNER_TEMP}/traffic-tmp" >> "$GITHUB_OUTPUT"
 
+      - name: Create temp directory
+        shell: bash
+        run: |
+          mkdir -p "${{ steps.temp.outputs.dir }}/snapshots"
+          mkdir -p "${{ steps.temp.outputs.dir }}/charts"
+
+      # ─────────────────────────────────────────────
+      # Шаг 3: Собираем данные API во временную папку
+      # ─────────────────────────────────────────────
       - name: Collect GitHub traffic
         env:
           GH_TOKEN: ${{ secrets.TRAFFIC_TOKEN }}
@@ -41,42 +53,50 @@ jobs:
 
           DATE="$(date -u +%Y-%m-%d)"
           REPOSITORY="${{ github.repository }}"
+          TMP_DIR="${{ steps.temp.outputs.dir }}"
 
           gh api "repos/${REPOSITORY}/traffic/views" \
             --jq '.views' \
-            > ".traffic-tmp/snapshots/views-${DATE}.json"
+            > "${TMP_DIR}/snapshots/views-${DATE}.json"
 
           gh api "repos/${REPOSITORY}/traffic/clones" \
             --jq '.clones' \
-            > ".traffic-tmp/snapshots/clones-${DATE}.json"
+            > "${TMP_DIR}/snapshots/clones-${DATE}.json"
 
           gh api "repos/${REPOSITORY}/traffic/popular/referrers" \
-            > ".traffic-tmp/snapshots/referrers-${DATE}.json"
+            > "${TMP_DIR}/snapshots/referrers-${DATE}.json"
 
           gh api "repos/${REPOSITORY}/traffic/popular/paths" \
-            > ".traffic-tmp/snapshots/paths-${DATE}.json"
+            > "${TMP_DIR}/snapshots/paths-${DATE}.json"
+
+          echo "Collected files:"
+          ls -la "${TMP_DIR}/snapshots/"
 
       # ─────────────────────────────────────────────
-      # Шаг 3: Генерируем SVG из скрипта main
+      # Шаг 4: Генерируем SVG из скрипта main
       # ─────────────────────────────────────────────
       - name: Generate SVG charts
         shell: bash
         run: |
           set -euo pipefail
 
-          # Копируем snapshots туда, где скрипт их ищет
-          mkdir -p traffic/snapshots
-          cp .traffic-tmp/snapshots/*.json traffic/snapshots/
+          TMP_DIR="${{ steps.temp.outputs.dir }}"
 
-          # Запускаем генератор из main
+          # Создаём временную структуру для скрипта
+          mkdir -p traffic/snapshots
+          cp "${TMP_DIR}/snapshots/"*.json traffic/snapshots/
+
+          # Запускаем генератор
           python3 scripts/generate_traffic_svg.py
 
-          # Сохраняем результат во временную директорию
-          mkdir -p .traffic-tmp/charts
-          cp traffic/charts/*.svg .traffic-tmp/charts/
+          # Копируем результат во временную директорию
+          cp traffic/charts/*.svg "${TMP_DIR}/charts/"
+
+          echo "Generated charts:"
+          ls -la "${TMP_DIR}/charts/"
 
       # ─────────────────────────────────────────────
-      # Шаг 4: Переключаемся на traffic-data
+      # Шаг 5: Переключаемся на traffic-data
       # ─────────────────────────────────────────────
       - name: Switch to traffic-data branch
         shell: bash
@@ -96,23 +116,26 @@ jobs:
           fi
 
       # ─────────────────────────────────────────────
-      # Шаг 5: Переносим данные из tmp и коммитим
+      # Шаг 6: Переносим данные из tmp и коммитим
       # ─────────────────────────────────────────────
       - name: Move data into place
         shell: bash
         run: |
           set -euo pipefail
 
+          TMP_DIR="${{ steps.temp.outputs.dir }}"
+
           mkdir -p traffic/snapshots traffic/charts
 
-          # Копируем новые snapshots (с дедупликацией по имени файла)
-          cp -n .traffic-tmp/snapshots/*.json traffic/snapshots/ || true
+          # Копируем новые snapshots (не перезаписываем существующие)
+          cp --update=none "${TMP_DIR}/snapshots/"*.json traffic/snapshots/ || true
 
           # Перезаписываем SVG (они всегда свежие)
-          cp .traffic-tmp/charts/*.svg traffic/charts/
+          cp "${TMP_DIR}/charts/"*.svg traffic/charts/
 
-          # Чистим tmp
-          rm -rf .traffic-tmp
+          echo "Final structure:"
+          ls -la traffic/snapshots/ | tail -5
+          ls -la traffic/charts/
 
       - name: Commit changes
         shell: bash
