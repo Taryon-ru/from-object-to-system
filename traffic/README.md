@@ -3,7 +3,7 @@
 
 Автоматическая статистика репозитория `taryon-ru/from-object-to-system`.
 
-<table align="left">
+<table align="center">
   <tr>
     <td align="center" width="50%">
       <img
