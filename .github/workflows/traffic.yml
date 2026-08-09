@@ -1,0 +1,134 @@
+name: Traffic Collector
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: traffic-data
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ─────────────────────────────────────────────
+      # Шаг 1: Checkout main (для скрипта генератора)
+      # ─────────────────────────────────────────────
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      # ─────────────────────────────────────────────
+      # Шаг 2: Собираем данные API во временную папку
+      # ─────────────────────────────────────────────
+      - name: Prepare temp directory
+        run: mkdir -p .traffic-tmp/snapshots
+
+      - name: Collect GitHub traffic
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          DATE="$(date -u +%Y-%m-%d)"
+          REPOSITORY="${{ github.repository }}"
+
+          gh api "repos/${REPOSITORY}/traffic/views" \
+            --jq '.views' \
+            > ".traffic-tmp/snapshots/views-${DATE}.json"
+
+          gh api "repos/${REPOSITORY}/traffic/clones" \
+            --jq '.clones' \
+            > ".traffic-tmp/snapshots/clones-${DATE}.json"
+
+          gh api "repos/${REPOSITORY}/traffic/popular/referrers" \
+            > ".traffic-tmp/snapshots/referrers-${DATE}.json"
+
+          gh api "repos/${REPOSITORY}/traffic/popular/paths" \
+            > ".traffic-tmp/snapshots/paths-${DATE}.json"
+
+      # ─────────────────────────────────────────────
+      # Шаг 3: Генерируем SVG из скрипта main
+      # ─────────────────────────────────────────────
+      - name: Generate SVG charts
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Копируем snapshots туда, где скрипт их ищет
+          mkdir -p traffic/snapshots
+          cp .traffic-tmp/snapshots/*.json traffic/snapshots/
+
+          # Запускаем генератор из main
+          python3 scripts/generate_traffic_svg.py
+
+          # Сохраняем результат во временную директорию
+          mkdir -p .traffic-tmp/charts
+          cp traffic/charts/*.svg .traffic-tmp/charts/
+
+      # ─────────────────────────────────────────────
+      # Шаг 4: Переключаемся на traffic-data
+      # ─────────────────────────────────────────────
+      - name: Switch to traffic-data branch
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Чистим рабочую директорию
+          rm -rf traffic scripts .github
+
+          if git ls-remote --exit-code --heads origin traffic-data >/dev/null 2>&1; then
+            git fetch origin traffic-data
+            git checkout traffic-data
+          else
+            git checkout --orphan traffic-data
+            git rm -rf . || true
+            git clean -fd
+          fi
+
+      # ─────────────────────────────────────────────
+      # Шаг 5: Переносим данные из tmp и коммитим
+      # ─────────────────────────────────────────────
+      - name: Move data into place
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p traffic/snapshots traffic/charts
+
+          # Копируем новые snapshots (с дедупликацией по имени файла)
+          cp -n .traffic-tmp/snapshots/*.json traffic/snapshots/ || true
+
+          # Перезаписываем SVG (они всегда свежие)
+          cp .traffic-tmp/charts/*.svg traffic/charts/
+
+          # Чистим tmp
+          rm -rf .traffic-tmp
+
+      - name: Commit changes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add traffic/
+
+          if git diff --cached --quiet; then
+            echo "No traffic changes."
+            exit 0
+          fi
+
+          git commit -m "chore: collect traffic $(date -u +%Y-%m-%d)"
+          git pull --rebase origin traffic-data || true
+          git push origin HEAD:traffic-data
