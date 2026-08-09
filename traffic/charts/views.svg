@@ -1,19 +1,19 @@
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 900 300"
-  width="900"
-  height="300"
+  viewBox="0 0 280 100"
+  width="280"
+  height="100"
   role="img"
   aria-label="GitHub views"
 >
   <style>
     .title {
-      font: 600 18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font: 600 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       fill: #1f2937;
     }
 
     .label {
-      font: 400 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font: 400 10px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       fill: #6b7280;
     }
 
@@ -58,63 +58,63 @@
   </style>
 
   <text
-    x="60"
-    y="28"
+    x="48"
+    y="22"
     class="title"
   >GitHub views</text>
 
   <line
-    x1="60"
-    y1="258"
-    x2="876"
-    y2="258"
+    x1="48"
+    y1="68"
+    x2="264"
+    y2="68"
     class="grid"
   />
 
   <line
-    x1="60"
-    y1="153.0"
-    x2="876"
-    y2="153.0"
+    x1="48"
+    y1="52.0"
+    x2="264"
+    y2="52.0"
     class="grid"
   />
 
   <line
-    x1="60"
-    y1="48"
-    x2="876"
-    y2="48"
+    x1="48"
+    y1="36"
+    x2="264"
+    y2="36"
     class="grid"
   />
 
   <polyline
-    points="60.0,258.0 122.8,258.0 185.5,258.0 248.3,258.0 311.1,258.0 373.8,258.0 436.6,258.0 499.4,258.0 562.2,258.0 624.9,258.0 687.7,258.0 750.5,48.0 813.2,48.9 876.0,93.3"
+    points="48.0,68.0 64.6,68.0 81.2,68.0 97.8,68.0 114.5,68.0 131.1,68.0 147.7,68.0 164.3,68.0 180.9,68.0 197.5,68.0 214.2,68.0 230.8,36.0 247.4,36.1 264.0,42.9"
     class="line"
   />
 
   <circle
-    cx="876.0"
-    cy="93.3"
+    cx="264.0"
+    cy="42.9"
     r="4"
     class="point"
   />
 
   <text
-    x="60"
-    y="288"
+    x="48"
+    y="88"
     class="label"
   >2026-07-26</text>
 
   <text
-    x="876"
-    y="288"
+    x="264"
+    y="88"
     text-anchor="end"
     class="label"
   >2026-08-08</text>
 
   <text
-    x="876"
-    y="38"
+    x="264"
+    y="26"
     text-anchor="end"
     class="label"
   >353</text>
