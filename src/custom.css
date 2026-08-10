@@ -222,7 +222,7 @@ abbr {
 html.navy .main-question,
 html.ayu .main-question,
 html.coal .main-question {
-  color: #9bbcff !important;
+  color: #3779FF !important;
 
   text-shadow:
     0 0 2px rgba(155, 188, 255, 0.28);
@@ -234,13 +234,13 @@ html.ayu .main-question p,
 html.ayu .main-question strong,
 html.coal .main-question p,
 html.coal .main-question strong {
-  color: #9bbcff !important;
+  color: #3779FF !important;
 }
 
 html.navy .main-question::before,
 html.ayu .main-question::before,
 html.coal .main-question::before {
-  background-color: #9bbcff !important;
+  background-color: #3779FF !important;
 }
 
 
