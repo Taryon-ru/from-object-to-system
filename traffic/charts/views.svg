@@ -6,6 +6,7 @@
   role="img"
   aria-label="GitHub views"
 >
+
   <style>
     .title {
       font-family:
@@ -13,9 +14,9 @@
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
-      fill: #333;
+      fill: #374151;
     }
 
     .label {
@@ -25,7 +26,7 @@
         "Segoe UI",
         sans-serif;
       font-size: 8px;
-      fill: #888;
+      fill: #6b7280;
     }
 
     .value {
@@ -34,66 +35,64 @@
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-      font-size: 9px;
+      font-size: 8px;
       font-weight: 600;
-      fill: #333;
-    }
-
-    .line {
-      fill: none;
-      stroke: #315a9b;
-      stroke-width: 1.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .point {
-      fill: #315a9b;
+      fill: #315f9f;
     }
   </style>
 
   <text
     x="36"
-    y="16"
+    y="10"
     class="title"
-  >
-    GitHub views
-  </text>
+  >GitHub views</text>
 
-  <polyline
-    points="36.0,98.0 54.0,98.0 72.0,98.0 90.0,98.0 108.0,98.0 126.0,98.0 144.0,98.0 162.0,98.0 180.0,98.0 198.0,98.0 216.0,24.0 234.0,24.3 252.0,40.0 270.0,33.5"
-    class="line"
+
+  <line
+    x1="36"
+    y1="98"
+    x2="244"
+    y2="98"
+    stroke="#d9dee5"
+    stroke-width="0.7"
   />
 
+
+  <polyline
+    points="36.0,98.0 52.0,98.0 68.0,98.0 84.0,98.0 100.0,98.0 116.0,98.0 132.0,98.0 148.0,98.0 164.0,98.0 180.0,98.0 196.0,24.0 212.0,24.3 228.0,40.0 244.0,33.5"
+    fill="none"
+    stroke="#315f9f"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+
   <circle
-    cx="270.0"
+    cx="244.0"
     cy="33.5"
-    r="2.5"
-    class="point"
+    r="2"
+    fill="#315f9f"
   />
 
   <text
-    x="242.0"
-    y="37.5"
+    x="240.0"
+    y="34.0"
     class="value"
-  >
-    392
-  </text>
+  >392</text>
+
 
   <text
     x="36"
-    y="112"
+    y="113"
     class="label"
-  >
-    2026-07-27
-  </text>
+  >2026-07-27</text>
 
   <text
-    x="270"
-    y="112"
+    x="244"
+    y="113"
     text-anchor="end"
     class="label"
-  >
-    2026-08-09
-  </text>
+  >2026-08-09</text>
+
 </svg>
