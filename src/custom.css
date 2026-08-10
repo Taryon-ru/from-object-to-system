@@ -157,7 +157,6 @@ abbr {
 
 
 
-
 /* ---------------------------------------------------------
    Main question
    --------------------------------------------------------- */
@@ -170,7 +169,7 @@ abbr {
 
   background: transparent;
 
-  #color: #071a3d;
+  color: #071a3d;
 
   font-size: 1.08em;
   line-height: 1.6;
@@ -188,10 +187,8 @@ abbr {
 
   margin-bottom: 1.1rem;
 
-  background: #071a3d;
+  background: currentColor;
   border-radius: 2px;
-
-  #box-shadow: 0 0 5px rgba(7, 26, 61, 0.22);
 }
 
 .main-question p {
@@ -220,23 +217,15 @@ abbr {
    --------------------------------------------------------- */
 
 body.night .main-question {
-  #color: #b8ceff;
+  color: #b8ceff;
 
   text-shadow:
     0 0 2px rgba(120, 165, 255, 0.3);
 }
 
-body.night .main-question p,
-body.night .main-question strong {
-  #color: #b8ceff;
-}
-
 body.night .main-question::before {
-  background: #9bbcff;
-
-  #box-shadow: 0 0 8px rgba(120, 165, 255, 0.4);
+  background: currentColor;
 }
-
 
 
 
