@@ -6,7 +6,6 @@
   role="img"
   aria-label="GitHub views"
 >
-
   <style>
     .title {
       font-family:
@@ -16,7 +15,7 @@
         sans-serif;
       font-size: 10px;
       font-weight: 600;
-      fill: #374151;
+      fill: #24292f;
     }
 
     .label {
@@ -26,7 +25,7 @@
         "Segoe UI",
         sans-serif;
       font-size: 8px;
-      fill: #6b7280;
+      fill: #6e7781;
     }
 
     .value {
@@ -37,62 +36,134 @@
         sans-serif;
       font-size: 8px;
       font-weight: 600;
-      fill: #315f9f;
+    }
+
+    .daily-line {
+      fill: none;
+      stroke: #57606a;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .cumulative-line {
+      fill: none;
+      stroke: #0969da;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .daily-point {
+      fill: #57606a;
+    }
+
+    .cumulative-point {
+      fill: #0969da;
+    }
+
+    .legend {
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      font-size: 7px;
+      fill: #6e7781;
     }
   </style>
 
+  <!-- Title -->
   <text
     x="36"
-    y="10"
+    y="12"
     class="title"
   >GitHub views</text>
 
-
+  <!-- Legend -->
   <line
     x1="36"
-    y1="98"
-    x2="244"
-    y2="98"
-    stroke="#d9dee5"
-    stroke-width="0.7"
+    y1="19"
+    x2="45"
+    y2="19"
+    class="daily-line"
   />
 
+  <text
+    x="48"
+    y="21.5"
+    class="legend"
+  >Daily</text>
 
+  <line
+    x1="83"
+    y1="19"
+    x2="92"
+    y2="19"
+    class="cumulative-line"
+  />
+
+  <text
+    x="95"
+    y="21.5"
+    class="legend"
+  >Cumulative</text>
+
+  <!-- Daily line -->
   <polyline
-    points="36.0,98.0 52.0,98.0 68.0,98.0 84.0,98.0 100.0,98.0 116.0,98.0 132.0,98.0 148.0,98.0 164.0,98.0 180.0,98.0 196.0,24.0 212.0,24.3 228.0,40.0 244.0,33.5"
-    fill="none"
-    stroke="#315f9f"
-    stroke-width="1.8"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    points="36.0,98.0 54.0,98.0 72.0,98.0 90.0,98.0 108.0,98.0 126.0,98.0 144.0,98.0 162.0,98.0 180.0,98.0 198.0,98.0 216.0,24.0 234.0,24.3 252.0,40.0 270.0,33.5"
+    class="daily-line"
   />
 
+  <!-- Cumulative line -->
+  <polyline
+    points="36.0,98.0 54.0,98.0 72.0,98.0 90.0,98.0 108.0,98.0 126.0,98.0 144.0,98.0 162.0,98.0 180.0,98.0 198.0,98.0 216.0,77.7 234.0,57.6 252.0,41.7 270.0,24.0"
+    class="cumulative-line"
+  />
 
+  <!-- Daily endpoint -->
   <circle
-    cx="244.0"
+    cx="270.0"
     cy="33.5"
     r="2"
-    fill="#315f9f"
+    class="daily-point"
   />
 
   <text
-    x="240.0"
-    y="34.0"
+    x="266.0"
+    y="38.0"
+    text-anchor="end"
     class="value"
+    fill="#57606a"
   >392</text>
 
+  <!-- Cumulative endpoint -->
+  <circle
+    cx="270.0"
+    cy="24.0"
+    r="2"
+    class="cumulative-point"
+  />
 
   <text
+    x="266.0"
+    y="32.0"
+    text-anchor="end"
+    class="value"
+    fill="#0969da"
+  >1 643</text>
+
+  <!-- Date range -->
+  <text
     x="36"
-    y="113"
+    y="112"
     class="label"
   >2026-07-27</text>
 
   <text
-    x="244"
-    y="113"
+    x="270"
+    y="112"
     text-anchor="end"
     class="label"
   >2026-08-09</text>
-
 </svg>

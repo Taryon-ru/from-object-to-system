@@ -4,9 +4,8 @@
   width="280"
   height="120"
   role="img"
-  aria-label="GitHub clones: daily and cumulative"
+  aria-label="GitHub clones"
 >
-
   <style>
     .title {
       font-family:
@@ -16,7 +15,7 @@
         sans-serif;
       font-size: 10px;
       font-weight: 600;
-      fill: #374151;
+      fill: #24292f;
     }
 
     .label {
@@ -26,10 +25,10 @@
         "Segoe UI",
         sans-serif;
       font-size: 8px;
-      fill: #6b7280;
+      fill: #6e7781;
     }
 
-    .value-daily {
+    .value {
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -37,18 +36,30 @@
         sans-serif;
       font-size: 8px;
       font-weight: 600;
-      fill: #315f9f;
     }
 
-    .value-cumulative {
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-      font-size: 8px;
-      font-weight: 600;
-      fill: #7b8794;
+    .daily-line {
+      fill: none;
+      stroke: #57606a;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .cumulative-line {
+      fill: none;
+      stroke: #0969da;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .daily-point {
+      fill: #57606a;
+    }
+
+    .cumulative-point {
+      fill: #0969da;
     }
 
     .legend {
@@ -58,133 +69,101 @@
         "Segoe UI",
         sans-serif;
       font-size: 7px;
-      fill: #6b7280;
+      fill: #6e7781;
     }
   </style>
 
   <!-- Title -->
-
   <text
     x="36"
-    y="10"
+    y="12"
     class="title"
   >GitHub clones</text>
 
-
   <!-- Legend -->
-
   <line
     x1="36"
-    y1="17"
+    y1="19"
     x2="45"
-    y2="17"
-    stroke="#315f9f"
-    stroke-width="2"
+    y2="19"
+    class="daily-line"
   />
 
   <text
     x="48"
-    y="19.5"
+    y="21.5"
     class="legend"
-  >daily</text>
+  >Daily</text>
 
   <line
-    x1="88"
-    y1="17"
-    x2="97"
-    y2="17"
-    stroke="#7b8794"
-    stroke-width="1.5"
+    x1="83"
+    y1="19"
+    x2="92"
+    y2="19"
+    class="cumulative-line"
   />
 
   <text
-    x="100"
-    y="19.5"
+    x="95"
+    y="21.5"
     class="legend"
-  >cumulative</text>
+  >Cumulative</text>
 
-
-  <!-- Grid -->
-
-  <line
-    x1="36"
-    y1="98"
-    x2="244"
-    y2="98"
-    stroke="#d9dee5"
-    stroke-width="0.7"
-  />
-
-
-  <!-- Daily clones -->
-
+  <!-- Daily line -->
   <polyline
-    points="36.0,98.0 52.0,98.0 68.0,98.0 84.0,98.0 100.0,98.0 116.0,98.0 132.0,98.0 148.0,98.0 164.0,98.0 180.0,98.0 196.0,39.4 212.0,41.7 228.0,24.0 244.0,44.7"
-    fill="none"
-    stroke="#315f9f"
-    stroke-width="1.8"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    points="36.0,98.0 54.0,98.0 72.0,98.0 90.0,98.0 108.0,98.0 126.0,98.0 144.0,98.0 162.0,98.0 180.0,98.0 198.0,98.0 216.0,39.4 234.0,41.7 252.0,24.0 270.0,44.7"
+    class="daily-line"
   />
 
-
-  <!-- Cumulative clones -->
-
+  <!-- Cumulative line -->
   <polyline
-    points="36.0,98.0 52.0,98.0 68.0,98.0 84.0,98.0 100.0,98.0 116.0,98.0 132.0,98.0 148.0,98.0 164.0,98.0 180.0,98.0 196.0,80.1 212.0,62.9 228.0,40.3 244.0,24.0"
-    fill="none"
-    stroke="#7b8794"
-    stroke-width="1.5"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    points="36.0,98.0 54.0,98.0 72.0,98.0 90.0,98.0 108.0,98.0 126.0,98.0 144.0,98.0 162.0,98.0 180.0,98.0 198.0,98.0 216.0,80.1 234.0,62.9 252.0,40.3 270.0,24.0"
+    class="cumulative-line"
   />
 
-
-  <!-- Latest daily point -->
-
+  <!-- Daily endpoint -->
   <circle
-    cx="244.0"
+    cx="270.0"
     cy="44.7"
     r="2"
-    fill="#315f9f"
+    class="daily-point"
   />
 
   <text
-    x="240.0"
-    y="34.0"
-    class="value-daily"
+    x="266.0"
+    y="45.7"
+    text-anchor="end"
+    class="value"
+    fill="#57606a"
   >142</text>
 
-
-  <!-- Latest cumulative point -->
-
+  <!-- Cumulative endpoint -->
   <circle
-    cx="244.0"
+    cx="270.0"
     cy="24.0"
-    r="1.8"
-    fill="#7b8794"
+    r="2"
+    class="cumulative-point"
   />
 
   <text
-    x="240.0"
-    y="41.0"
-    class="value-cumulative"
+    x="266.0"
+    y="32.0"
+    text-anchor="end"
+    class="value"
+    fill="#0969da"
   >645</text>
 
-
-  <!-- Dates -->
-
+  <!-- Date range -->
   <text
     x="36"
-    y="113"
+    y="112"
     class="label"
   >2026-07-27</text>
 
   <text
-    x="244"
-    y="113"
+    x="270"
+    y="112"
     text-anchor="end"
     class="label"
   >2026-08-09</text>
-
 </svg>
