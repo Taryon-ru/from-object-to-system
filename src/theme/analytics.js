@@ -39,7 +39,7 @@
       <span id="busuanzi_container_site_uv" hidden>
         <span aria-hidden="true">👤</span>
         <span id="busuanzi_value_site_uv"></span>
-        посетителей сегодня
+        посетителей
       </span>
 
       <span class="book-statistics-separator" aria-hidden="true">
