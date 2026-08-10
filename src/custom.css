@@ -218,13 +218,17 @@ abbr {
 
 body.night .main-question {
   color: #b8ceff;
-
   text-shadow:
     0 0 2px rgba(120, 165, 255, 0.3);
 }
 
+body.night .main-question p,
+body.night .main-question strong {
+  color: #b8ceff;
+}
+
 body.night .main-question::before {
-  background: currentColor;
+  background: #b8ceff;
 }
 
 
