@@ -157,6 +157,8 @@ abbr {
 
 
 
+
+
 /* ---------------------------------------------------------
    Main question
    --------------------------------------------------------- */
@@ -169,7 +171,7 @@ abbr {
 
   background: transparent;
 
-  color: #071a3d;
+  color: #071a3d !important;
 
   font-size: 1.08em;
   line-height: 1.6;
@@ -187,13 +189,14 @@ abbr {
 
   margin-bottom: 1.1rem;
 
-  background: currentColor;
+  background-color: #071a3d !important;
+
   border-radius: 2px;
 }
 
 .main-question p {
   margin: 0;
-  color: inherit;
+  color: inherit !important;
 }
 
 .main-question strong {
@@ -201,7 +204,7 @@ abbr {
 
   margin-bottom: 0.45rem;
 
-  color: inherit;
+  color: inherit !important;
 
   font-size: 0.78em;
   font-weight: 700;
@@ -213,22 +216,27 @@ abbr {
 
 
 /* ---------------------------------------------------------
-   Main question — dark theme
+   Main question — mdBook dark themes
    --------------------------------------------------------- */
 
-body.night .main-question {
-  color: #6ea8ff !important;
+html.navy .main-question,
+html.coal .main-question {
+  color: #9bbcff !important;
+
   text-shadow:
-    0 0 2px rgba(120, 165, 255, 0.3);
+    0 0 2px rgba(155, 188, 255, 0.28);
 }
 
-body.night .main-question p,
-body.night .main-question strong {
-  color: #6ea8ff !important;
+html.navy .main-question p,
+html.navy .main-question strong,
+html.coal .main-question p,
+html.coal .main-question strong {
+  color: #9bbcff !important;
 }
 
-body.night .main-question::before {
-  background: #6ea8ff !important;
+html.navy .main-question::before,
+html.coal .main-question::before {
+  background-color: #9bbcff !important;
 }
 
 
