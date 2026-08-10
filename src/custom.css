@@ -220,6 +220,7 @@ abbr {
    --------------------------------------------------------- */
 
 html.navy .main-question,
+html.ayu .main-question,
 html.coal .main-question {
   color: #9bbcff !important;
 
@@ -229,12 +230,15 @@ html.coal .main-question {
 
 html.navy .main-question p,
 html.navy .main-question strong,
+html.ayu .main-question p,
+html.ayu .main-question strong,
 html.coal .main-question p,
 html.coal .main-question strong {
   color: #9bbcff !important;
 }
 
 html.navy .main-question::before,
+html.ayu .main-question::before,
 html.coal .main-question::before {
   background-color: #9bbcff !important;
 }
