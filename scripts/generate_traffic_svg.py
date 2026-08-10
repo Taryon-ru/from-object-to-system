@@ -19,7 +19,7 @@ WIDTH = 280
 HEIGHT = 120
 
 PADDING_LEFT = 36
-PADDING_RIGHT = 36
+PADDING_RIGHT = 10
 PADDING_TOP = 24
 PADDING_BOTTOM = 22
 
@@ -66,47 +66,18 @@ def load_snapshots(prefix: str) -> list[Point]:
             if not isinstance(count, int):
                 continue
 
-            date = timestamp[:10]
-
             points.append(
                 Point(
-                    date=date,
+                    date=timestamp[:10],
                     value=count,
                 )
             )
 
-    # GitHub API returns hourly data in some responses.
-    # Aggregate all records belonging to the same day.
-    daily: dict[str, int] = {}
-
-    for point in points:
-        daily[point.date] = daily.get(point.date, 0) + point.value
-
-    return [
-        Point(date=date, value=value)
-        for date, value in sorted(daily.items())
-    ]
-
-
-def cumulative_points(points: list[Point]) -> list[Point]:
-    total = 0
-    result: list[Point] = []
-
-    for point in points:
-        total += point.value
-
-        result.append(
-            Point(
-                date=point.date,
-                value=total,
-            )
-        )
-
-    return result
+    return sorted(points, key=lambda point: point.date)
 
 
 # ─────────────────────────────────────────────
-# SVG helpers
+# Helpers
 # ─────────────────────────────────────────────
 
 def escape(value: str) -> str:
@@ -117,13 +88,52 @@ def format_number(value: int) -> str:
     return f"{value:,}"
 
 
-def build_polyline(
+def calculate_cumulative(points: list[Point]) -> list[Point]:
+    cumulative: list[Point] = []
+    total = 0
+
+    for point in points:
+        total += point.value
+
+        cumulative.append(
+            Point(
+                date=point.date,
+                value=total,
+            )
+        )
+
+    return cumulative
+
+
+# ─────────────────────────────────────────────
+# SVG chart
+# ─────────────────────────────────────────────
+
+def create_clones_chart(
     points: list[Point],
-    max_value: int,
-    x_step: float,
-) -> str:
+    output: Path,
+) -> None:
     if not points:
-        return ""
+        return
+
+    cumulative = calculate_cumulative(points)
+
+    all_values = [
+        point.value
+        for point in points
+    ] + [
+        point.value
+        for point in cumulative
+    ]
+
+    max_value = max(all_values)
+    max_value = max(max_value, 1)
+
+    x_step = (
+        CHART_WIDTH / (len(points) - 1)
+        if len(points) > 1
+        else 0
+    )
 
     def x(index: int) -> float:
         return PADDING_LEFT + index * x_step
@@ -135,14 +145,190 @@ def build_polyline(
             - (value / max_value) * CHART_HEIGHT
         )
 
-    return " ".join(
+    daily_path_points = [
         f"{x(index):.1f},{y(point.value):.1f}"
         for index, point in enumerate(points)
+    ]
+
+    cumulative_path_points = [
+        f"{x(index):.1f},{y(point.value):.1f}"
+        for index, point in enumerate(cumulative)
+    ]
+
+    daily_line = " ".join(daily_path_points)
+    cumulative_line = " ".join(cumulative_path_points)
+
+    latest_daily = points[-1]
+    latest_cumulative = cumulative[-1]
+
+    latest_x = x(len(points) - 1)
+    latest_daily_y = y(latest_daily.value)
+    latest_cumulative_y = y(latest_cumulative.value)
+
+    # Prevent labels from going outside the SVG.
+    daily_label_x = min(
+        latest_x + 6,
+        WIDTH - PADDING_RIGHT - 28,
     )
+
+    cumulative_label_x = min(
+        latest_x + 6,
+        WIDTH - PADDING_RIGHT - 28,
+    )
+
+    # If both endpoints are close vertically,
+    # move the daily label slightly upward.
+    daily_label_y = latest_daily_y + 4
+    cumulative_label_y = latest_cumulative_y + 4
+
+    if abs(daily_label_y - cumulative_label_y) < 12:
+        daily_label_y -= 7
+        cumulative_label_y += 7
+
+    latest_date = points[-1].date
+    first_date = points[0].date
+
+    svg = f"""\
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 {WIDTH} {HEIGHT}"
+  width="{WIDTH}"
+  height="{HEIGHT}"
+  role="img"
+  aria-label="GitHub clones"
+>
+  <style>
+    .title {{
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      fill: #333;
+    }}
+
+    .label {{
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      font-size: 8px;
+      fill: #888;
+    }}
+
+    .value {{
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      fill: #333;
+    }}
+
+    .daily-line {{
+      fill: none;
+      stroke: #315a9b;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }}
+
+    .cumulative-line {{
+      fill: none;
+      stroke: #777;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 4 3;
+    }}
+
+    .daily-point {{
+      fill: #315a9b;
+    }}
+
+    .cumulative-point {{
+      fill: #777;
+    }}
+  </style>
+
+  <text
+    x="{PADDING_LEFT}"
+    y="16"
+    class="title"
+  >
+    GitHub clones
+  </text>
+
+  <polyline
+    points="{daily_line}"
+    class="daily-line"
+  />
+
+  <polyline
+    points="{cumulative_line}"
+    class="cumulative-line"
+  />
+
+  <circle
+    cx="{latest_x:.1f}"
+    cy="{latest_daily_y:.1f}"
+    r="2.5"
+    class="daily-point"
+  />
+
+  <circle
+    cx="{latest_x:.1f}"
+    cy="{latest_cumulative_y:.1f}"
+    r="2.5"
+    class="cumulative-point"
+  />
+
+  <text
+    x="{daily_label_x:.1f}"
+    y="{daily_label_y:.1f}"
+    class="value"
+  >
+    {format_number(latest_daily.value)}
+  </text>
+
+  <text
+    x="{cumulative_label_x:.1f}"
+    y="{cumulative_label_y:.1f}"
+    class="value"
+  >
+    {format_number(latest_cumulative.value)}
+  </text>
+
+  <text
+    x="{PADDING_LEFT}"
+    y="{HEIGHT - 8}"
+    class="label"
+  >
+    {escape(first_date)}
+  </text>
+
+  <text
+    x="{WIDTH - PADDING_RIGHT}"
+    y="{HEIGHT - 8}"
+    text-anchor="end"
+    class="label"
+  >
+    {escape(latest_date)}
+  </text>
+</svg>
+"""
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(svg, encoding="utf-8")
 
 
 # ─────────────────────────────────────────────
-# Single-line chart
+# Generic single-line chart
 # ─────────────────────────────────────────────
 
 def create_chart(
@@ -153,10 +339,8 @@ def create_chart(
     if not points:
         return
 
-    max_value = max(
-        max(point.value for point in points),
-        1,
-    )
+    max_value = max(point.value for point in points)
+    max_value = max(max_value, 1)
 
     x_step = (
         CHART_WIDTH / (len(points) - 1)
@@ -164,14 +348,34 @@ def create_chart(
         else 0
     )
 
-    line = build_polyline(
-        points,
-        max_value,
-        x_step,
+    def x(index: int) -> float:
+        return PADDING_LEFT + index * x_step
+
+    def y(value: int) -> float:
+        return (
+            PADDING_TOP
+            + CHART_HEIGHT
+            - (value / max_value) * CHART_HEIGHT
+        )
+
+    path_points = [
+        f"{x(index):.1f},{y(point.value):.1f}"
+        for index, point in enumerate(points)
+    ]
+
+    line = " ".join(path_points)
+
+    latest = points[-1]
+
+    latest_x = x(len(points) - 1)
+    latest_y = y(latest.value)
+
+    label_x = min(
+        latest_x + 6,
+        WIDTH - PADDING_RIGHT - 28,
     )
 
-    first = points[0]
-    latest = points[-1]
+    label_y = latest_y + 4
 
     svg = f"""\
 <svg
@@ -184,88 +388,94 @@ def create_chart(
 >
   <style>
     .title {{
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
       font-size: 11px;
       font-weight: 600;
-      fill: #1f2937;
+      fill: #333;
     }}
 
     .label {{
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
       font-size: 8px;
-      fill: #6b7280;
+      fill: #888;
     }}
 
-    .grid {{
-      stroke: #e5e7eb;
-      stroke-width: 1;
+    .value {{
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      fill: #333;
     }}
 
     .line {{
       fill: none;
-      stroke: #315f9f;
-      stroke-width: 1.8;
+      stroke: #315a9b;
+      stroke-width: 1.5;
       stroke-linecap: round;
       stroke-linejoin: round;
     }}
 
-    @media (prefers-color-scheme: dark) {{
-      .title {{
-        fill: #e5e7eb;
-      }}
-
-      .label {{
-        fill: #9ca3af;
-      }}
-
-      .grid {{
-        stroke: #374151;
-      }}
-
-      .line {{
-        stroke: #8fb5e8;
-      }}
+    .point {{
+      fill: #315a9b;
     }}
   </style>
 
   <text
     x="{PADDING_LEFT}"
-    y="22"
+    y="16"
     class="title"
-  >{escape(title)}</text>
-
-  <line
-    x1="{PADDING_LEFT}"
-    y1="{PADDING_TOP + CHART_HEIGHT}"
-    x2="{WIDTH - PADDING_RIGHT}"
-    y2="{PADDING_TOP + CHART_HEIGHT}"
-    class="grid"
-  />
+  >
+    {escape(title)}
+  </text>
 
   <polyline
     points="{line}"
     class="line"
   />
 
+  <circle
+    cx="{latest_x:.1f}"
+    cy="{latest_y:.1f}"
+    r="2.5"
+    class="point"
+  />
+
+  <text
+    x="{label_x:.1f}"
+    y="{label_y:.1f}"
+    class="value"
+  >
+    {format_number(latest.value)}
+  </text>
+
   <text
     x="{PADDING_LEFT}"
-    y="{HEIGHT - 12}"
+    y="{HEIGHT - 8}"
     class="label"
-  >{escape(first.date)}</text>
+  >
+    {escape(points[0].date)}
+  </text>
 
   <text
     x="{WIDTH - PADDING_RIGHT}"
-    y="{HEIGHT - 12}"
+    y="{HEIGHT - 8}"
     text-anchor="end"
     class="label"
-  >{escape(latest.date)}</text>
-
-  <text
-    x="{WIDTH - PADDING_RIGHT}"
-    y="{PADDING_TOP - 10}"
-    text-anchor="end"
-    class="label"
-  >{format_number(latest.value)}</text>
+  >
+    {escape(latest.date)}
+  </text>
 </svg>
 """
 
@@ -274,240 +484,11 @@ def create_chart(
 
 
 # ─────────────────────────────────────────────
-# Clones chart with cumulative series
-# ─────────────────────────────────────────────
-
-def create_clones_chart(
-    points: list[Point],
-    output: Path,
-) -> None:
-    if not points:
-        return
-
-    cumulative = cumulative_points(points)
-
-    daily_max = max(
-        max(point.value for point in points),
-        1,
-    )
-
-    cumulative_max = max(
-        max(point.value for point in cumulative),
-        1,
-    )
-
-    x_step = (
-        CHART_WIDTH / (len(points) - 1)
-        if len(points) > 1
-        else 0
-    )
-
-    def x(index: int) -> float:
-        return PADDING_LEFT + index * x_step
-
-    def y_daily(value: int) -> float:
-        return (
-            PADDING_TOP
-            + CHART_HEIGHT
-            - (value / daily_max) * CHART_HEIGHT
-        )
-
-    def y_cumulative(value: int) -> float:
-        return (
-            PADDING_TOP
-            + CHART_HEIGHT
-            - (value / cumulative_max) * CHART_HEIGHT
-        )
-
-    daily_line = " ".join(
-        f"{x(index):.1f},{y_daily(point.value):.1f}"
-        for index, point in enumerate(points)
-    )
-
-    cumulative_line = " ".join(
-        f"{x(index):.1f},{y_cumulative(point.value):.1f}"
-        for index, point in enumerate(cumulative)
-    )
-
-    first = points[0]
-    latest = points[-1]
-    latest_cumulative = cumulative[-1]
-
-    svg = f"""\
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 {WIDTH} {HEIGHT}"
-  width="{WIDTH}"
-  height="{HEIGHT}"
-  role="img"
-  aria-label="GitHub clones: daily and cumulative"
->
-  <style>
-    .title {{
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      fill: #1f2937;
-    }}
-
-    .legend {{
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 7px;
-      fill: #6b7280;
-    }}
-
-    .label {{
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 8px;
-      fill: #6b7280;
-    }}
-
-    .grid {{
-      stroke: #e5e7eb;
-      stroke-width: 1;
-    }}
-
-    .daily {{
-      fill: none;
-      stroke: #315f9f;
-      stroke-width: 1.8;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }}
-
-    .cumulative {{
-      fill: none;
-      stroke: #9ca3af;
-      stroke-width: 1.4;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: 3 2;
-    }}
-
-    @media (prefers-color-scheme: dark) {{
-      .title {{
-        fill: #e5e7eb;
-      }}
-
-      .legend,
-      .label {{
-        fill: #9ca3af;
-      }}
-
-      .grid {{
-        stroke: #374151;
-      }}
-
-      .daily {{
-        stroke: #8fb5e8;
-      }}
-
-      .cumulative {{
-        stroke: #9ca3af;
-      }}
-    }}
-  </style>
-
-  <text
-    x="{PADDING_LEFT}"
-    y="12"
-    class="title"
-  >GitHub clones</text>
-
-  <line
-    x1="{PADDING_LEFT}"
-    y1="{PADDING_TOP + CHART_HEIGHT}"
-    x2="{WIDTH - PADDING_RIGHT}"
-    y2="{PADDING_TOP + CHART_HEIGHT}"
-    class="grid"
-  />
-
-  <line
-    x1="{PADDING_LEFT}"
-    y1="17"
-    x2="{PADDING_LEFT + 10}"
-    y2="17"
-    class="daily"
-  />
-
-  <text
-    x="{PADDING_LEFT + 13}"
-    y="19"
-    class="legend"
-  >daily</text>
-
-  <line
-    x1="{PADDING_LEFT + 48}"
-    y1="17"
-    x2="{PADDING_LEFT + 58}"
-    y2="17"
-    class="cumulative"
-  />
-
-  <text
-    x="{PADDING_LEFT + 61}"
-    y="19"
-    class="legend"
-  >cumulative</text>
-
-  <polyline
-    points="{cumulative_line}"
-    class="cumulative"
-  />
-
-  <polyline
-    points="{daily_line}"
-    class="daily"
-  />
-
-  <text
-    x="{PADDING_LEFT}"
-    y="{HEIGHT - 12}"
-    class="label"
-  >{escape(first.date)}</text>
-
-  <text
-    x="{WIDTH - PADDING_RIGHT}"
-    y="{HEIGHT - 12}"
-    text-anchor="end"
-    class="label"
-  >{escape(latest.date)}</text>
-
-  <text
-    x="{PADDING_LEFT - 4}"
-    y="{PADDING_TOP + 7}"
-    text-anchor="end"
-    class="label"
-  >{format_number(daily_max)}</text>
-
-  <text
-    x="{WIDTH - PADDING_RIGHT + 4}"
-    y="{PADDING_TOP + 7}"
-    class="label"
-  >{format_number(cumulative_max)}</text>
-
-  <text
-    x="{WIDTH - PADDING_RIGHT}"
-    y="{PADDING_TOP - 10}"
-    text-anchor="end"
-    class="label"
-  >Σ {format_number(latest_cumulative.value)}</text>
-</svg>
-"""
-
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(svg, encoding="utf-8")
-
-
-# ─────────────────────────────────────────────
-# Entry point
+# Main
 # ─────────────────────────────────────────────
 
 def main() -> None:
-    CHARTS.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
+    CHARTS.mkdir(parents=True, exist_ok=True)
 
     views = load_snapshots("views")
     clones = load_snapshots("clones")
