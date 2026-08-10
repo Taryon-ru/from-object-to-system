@@ -6,30 +6,70 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
+# ============================================================
+# Paths
+# ============================================================
+
 ROOT = Path(__file__).resolve().parent.parent
+
 SNAPSHOTS = ROOT / "traffic" / "snapshots"
 CHARTS = ROOT / "traffic" / "charts"
 
 
-# ─────────────────────────────────────────────
-# Chart dimensions
-# ─────────────────────────────────────────────
+# ============================================================
+# Размеры SVG
+#
+# Размер намеренно НЕ меняем.
+# График используется непосредственно в README GitHub.
+# ============================================================
 
 WIDTH = 280
 HEIGHT = 120
 
+
+# ============================================================
+# Геометрия графика
+# ============================================================
+
 PADDING_LEFT = 36
-PADDING_RIGHT = 10
+
+# Справа оставляем дополнительное место.
+#
+# Раньше конечная точка практически совпадала с правой
+# границей области построения, поэтому подпись значения
+# приходилось ставить слева от точки — прямо поверх линии.
+#
+# Теперь справа резервируется место под конечные значения.
+PADDING_RIGHT = 42
+
 PADDING_TOP = 24
 PADDING_BOTTOM = 22
+
 
 CHART_WIDTH = WIDTH - PADDING_LEFT - PADDING_RIGHT
 CHART_HEIGHT = HEIGHT - PADDING_TOP - PADDING_BOTTOM
 
 
-# ─────────────────────────────────────────────
-# Data model
-# ─────────────────────────────────────────────
+# ============================================================
+# Цвета
+#
+# Цвета намеренно спокойные.
+# SVG используется как небольшая информационная карточка,
+# поэтому здесь нет яркой декоративной палитры.
+# ============================================================
+
+COLOR_DAILY = "#2563eb"
+COLOR_TOTAL = "#64748b"
+
+COLOR_TEXT = "#475569"
+COLOR_MUTED = "#94a3b8"
+
+COLOR_GRID = "#e2e8f0"
+
+
+# ============================================================
+# Данные
+# ============================================================
 
 @dataclass(frozen=True)
 class Point:
@@ -37,11 +77,26 @@ class Point:
     value: int
 
 
-# ─────────────────────────────────────────────
-# Data loading
-# ─────────────────────────────────────────────
+# ============================================================
+# Загрузка snapshot-файлов
+# ============================================================
 
 def load_snapshots(prefix: str) -> list[Point]:
+    """
+    Загружает дневные значения из snapshot-файлов.
+
+    Ожидаемый формат файла:
+
+    [
+        {
+            "timestamp": "2026-08-10T00:00:00Z",
+            "count": 42
+        }
+    ]
+
+    GitHub Traffic API возвращает массив дневных значений.
+    """
+
     points: list[Point] = []
 
     for path in sorted(SNAPSHOTS.glob(f"{prefix}-*.json")):
@@ -66,161 +121,157 @@ def load_snapshots(prefix: str) -> list[Point]:
             if not isinstance(count, int):
                 continue
 
+            date = timestamp[:10]
+
             points.append(
                 Point(
-                    date=timestamp[:10],
+                    date=date,
                     value=count,
                 )
             )
 
-    return sorted(points, key=lambda point: point.date)
-
-
-def cumulative_points(points: list[Point]) -> list[Point]:
-    total = 0
-    result: list[Point] = []
+    # На случай, если GitHub API или snapshot-файлы содержат
+    # несколько записей для одной даты.
+    #
+    # Последнее значение считается актуальным.
+    by_date: dict[str, Point] = {}
 
     for point in points:
-        total += point.value
+        by_date[point.date] = point
 
-        result.append(
-            Point(
-                date=point.date,
-                value=total,
-            )
-        )
-
-    return result
+    return sorted(
+        by_date.values(),
+        key=lambda point: point.date,
+    )
 
 
-# ─────────────────────────────────────────────
-# SVG helpers
-# ─────────────────────────────────────────────
+# ============================================================
+# Вспомогательные функции
+# ============================================================
 
 def escape(value: str) -> str:
+    """Безопасное экранирование текста для SVG."""
+
     return html.escape(value, quote=True)
 
 
 def format_number(value: int) -> str:
-    return f"{value:,}".replace(",", " ")
+    """
+    Форматирование числа для SVG.
+
+    Например:
+        1234 -> 1,234
+        128  -> 128
+    """
+
+    return f"{value:,}"
 
 
-def create_chart(
+# ============================================================
+# Масштабирование
+# ============================================================
+
+def create_scale(max_value: int) -> float:
+    """
+    Возвращает верхнюю границу шкалы.
+
+    Для маленьких значений оставляем небольшой запас сверху,
+    чтобы линия не упиралась непосредственно в верхнюю границу.
+    """
+
+    if max_value <= 0:
+        return 1.0
+
+    return max(
+        float(max_value),
+        1.0,
+    )
+
+
+def create_y_function(max_value: int):
+    """
+    Создаёт функцию преобразования значения в координату Y.
+
+    В SVG координата Y увеличивается сверху вниз, поэтому
+    большие значения должны находиться выше.
+    """
+
+    scale = create_scale(max_value)
+
+    def y(value: int) -> float:
+        return (
+            PADDING_TOP
+            + CHART_HEIGHT
+            - (value / scale) * CHART_HEIGHT
+        )
+
+    return y
+
+
+# ============================================================
+# Генерация polyline
+# ============================================================
+
+def create_polyline(
     points: list[Point],
-    title: str,
+    y_function,
+) -> str:
+    """
+    Преобразует набор точек в SVG polyline.
+    """
+
+    if not points:
+        return ""
+
+    if len(points) == 1:
+        x_positions = [PADDING_LEFT + CHART_WIDTH / 2]
+    else:
+        x_step = CHART_WIDTH / (len(points) - 1)
+
+        x_positions = [
+            PADDING_LEFT + index * x_step
+            for index in range(len(points))
+        ]
+
+    coordinates = []
+
+    for x_position, point in zip(x_positions, points):
+        coordinates.append(
+            f"{x_position:.1f},{y_function(point.value):.1f}"
+        )
+
+    return " ".join(coordinates)
+
+
+# ============================================================
+# Генерация графика Views
+# ============================================================
+
+def create_views_chart(
+    points: list[Point],
     output: Path,
 ) -> None:
+    """
+    Создаёт график просмотров.
+
+    Для views используется одна линия.
+    """
+
     if not points:
         return
 
-    daily_points = points
-    total_points = cumulative_points(points)
+    max_value = max(point.value for point in points)
 
-    # ─────────────────────────────────────────
-    # Independent scales
-    #
-    # Daily values and cumulative values have
-    # completely different ranges, therefore
-    # each line gets its own Y scale.
-    # ─────────────────────────────────────────
+    y = create_y_function(max_value)
 
-    daily_max = max(
-        max(point.value for point in daily_points),
-        1,
+    line = create_polyline(
+        points,
+        y,
     )
 
-    cumulative_max = max(
-        max(point.value for point in total_points),
-        1,
-    )
+    latest = points[-1]
 
-    x_step = (
-        CHART_WIDTH / (len(points) - 1)
-        if len(points) > 1
-        else 0
-    )
-
-    def x(index: int) -> float:
-        return PADDING_LEFT + index * x_step
-
-    def y_daily(value: int) -> float:
-        return (
-            PADDING_TOP
-            + CHART_HEIGHT
-            - (value / daily_max) * CHART_HEIGHT
-        )
-
-    def y_cumulative(value: int) -> float:
-        return (
-            PADDING_TOP
-            + CHART_HEIGHT
-            - (value / cumulative_max) * CHART_HEIGHT
-        )
-
-    daily_path = " ".join(
-        f"{x(index):.1f},{y_daily(point.value):.1f}"
-        for index, point in enumerate(daily_points)
-    )
-
-    cumulative_path = " ".join(
-        f"{x(index):.1f},{y_cumulative(point.value):.1f}"
-        for index, point in enumerate(total_points)
-    )
-
-    latest_daily = daily_points[-1]
-    latest_cumulative = total_points[-1]
-
-    last_x = x(len(points) - 1)
-
-    daily_y = y_daily(latest_daily.value)
-    cumulative_y = y_cumulative(latest_cumulative.value)
-
-    # ─────────────────────────────────────────
-    # Endpoint labels
-    #
-    # Important:
-    # each value is positioned against the
-    # endpoint of its OWN line.
-    # ─────────────────────────────────────────
-
-    label_gap = 5
-
-    daily_label_y = daily_y - label_gap
-    cumulative_label_y = cumulative_y + label_gap
-
-    # Keep labels inside the chart viewport.
-    daily_label_y = max(
-        PADDING_TOP + 8,
-        min(daily_label_y, HEIGHT - PADDING_BOTTOM),
-    )
-
-    cumulative_label_y = max(
-        PADDING_TOP + 8,
-        min(cumulative_label_y, HEIGHT - PADDING_BOTTOM),
-    )
-
-    # If the two endpoints are visually too close,
-    # move the labels apart without changing the
-    # actual line coordinates.
-    minimum_label_distance = 12
-
-    if abs(daily_label_y - cumulative_label_y) < minimum_label_distance:
-        if daily_y <= cumulative_y:
-            daily_label_y -= 6
-            cumulative_label_y += 6
-        else:
-            daily_label_y += 6
-            cumulative_label_y -= 6
-
-    daily_label_y = max(
-        PADDING_TOP + 8,
-        min(daily_label_y, HEIGHT - PADDING_BOTTOM),
-    )
-
-    cumulative_label_y = max(
-        PADDING_TOP + 8,
-        min(cumulative_label_y, HEIGHT - PADDING_BOTTOM),
-    )
+    latest_y = y(latest.value)
 
     svg = f"""\
 <svg
@@ -229,8 +280,9 @@ def create_chart(
   width="{WIDTH}"
   height="{HEIGHT}"
   role="img"
-  aria-label="{escape(title)}"
+  aria-label="GitHub views"
 >
+
   <style>
     .title {{
       font-family:
@@ -238,9 +290,9 @@ def create_chart(
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
-      fill: #24292f;
+      fill: {COLOR_TEXT};
     }}
 
     .label {{
@@ -249,8 +301,8 @@ def create_chart(
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-      font-size: 8px;
-      fill: #6e7781;
+      font-size: 9px;
+      fill: {COLOR_MUTED};
     }}
 
     .value {{
@@ -259,32 +311,295 @@ def create_chart(
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-      font-size: 8px;
+      font-size: 9px;
       font-weight: 600;
+      fill: {COLOR_DAILY};
+    }}
+  </style>
+
+  <text
+    x="{PADDING_LEFT}"
+    y="13"
+    class="title"
+  >
+    GitHub views
+  </text>
+
+  <line
+    x1="{PADDING_LEFT}"
+    y1="{PADDING_TOP + CHART_HEIGHT}"
+    x2="{PADDING_LEFT + CHART_WIDTH}"
+    y2="{PADDING_TOP + CHART_HEIGHT}"
+    stroke="{COLOR_GRID}"
+    stroke-width="1"
+  />
+
+  <polyline
+    points="{line}"
+    fill="none"
+    stroke="{COLOR_DAILY}"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <circle
+    cx="{PADDING_LEFT + CHART_WIDTH}"
+    cy="{latest_y:.1f}"
+    r="2.5"
+    fill="{COLOR_DAILY}"
+  />
+
+  <!--
+    Значение находится СПРАВА от конечной точки.
+
+    Это возможно благодаря увеличенному PADDING_RIGHT.
+    Поэтому текст больше не пересекается с линией.
+  -->
+  <text
+    x="{PADDING_LEFT + CHART_WIDTH + 6}"
+    y="{latest_y + 3:.1f}"
+    class="value"
+  >
+    {format_number(latest.value)}
+  </text>
+
+  <text
+    x="{PADDING_LEFT}"
+    y="{HEIGHT - 7}"
+    class="label"
+  >
+    {escape(points[0].date)}
+  </text>
+
+  <text
+    x="{WIDTH - PADDING_RIGHT}"
+    y="{HEIGHT - 7}"
+    text-anchor="end"
+    class="label"
+  >
+    {escape(latest.date)}
+  </text>
+
+</svg>
+"""
+
+    output.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    output.write_text(
+        svg,
+        encoding="utf-8",
+    )
+
+
+# ============================================================
+# Генерация графика Clones
+# ============================================================
+
+def create_clones_chart(
+    points: list[Point],
+    output: Path,
+) -> None:
+    """
+    Создаёт график клонирований.
+
+    На графике две линии:
+
+    1. Daily
+       Количество клонирований за конкретный день.
+
+    2. Total
+       Накопительное количество клонирований.
+
+    Важный момент:
+    обе линии используют РАЗНЫЕ шкалы.
+
+    Это необходимо потому, что cumulative-значение постепенно
+    становится значительно больше дневного. Если использовать
+    одну шкалу, Daily-линия практически прижмётся к нулю.
+    """
+
+    if not points:
+        return
+
+    # --------------------------------------------------------
+    # Daily
+    # --------------------------------------------------------
+
+    daily_values = [
+        point.value
+        for point in points
+    ]
+
+    daily_max = max(daily_values)
+
+    daily_y = create_y_function(
+        daily_max,
+    )
+
+    # --------------------------------------------------------
+    # Cumulative
+    # --------------------------------------------------------
+
+    cumulative_points: list[Point] = []
+
+    total = 0
+
+    for point in points:
+        total += point.value
+
+        cumulative_points.append(
+            Point(
+                date=point.date,
+                value=total,
+            )
+        )
+
+    cumulative_max = cumulative_points[-1].value
+
+    cumulative_y = create_y_function(
+        cumulative_max,
+    )
+
+    # --------------------------------------------------------
+    # X coordinates
+    # --------------------------------------------------------
+
+    if len(points) == 1:
+        x_positions = [
+            PADDING_LEFT + CHART_WIDTH / 2
+        ]
+    else:
+        x_step = CHART_WIDTH / (len(points) - 1)
+
+        x_positions = [
+            PADDING_LEFT + index * x_step
+            for index in range(len(points))
+        ]
+
+    # --------------------------------------------------------
+    # Daily line
+    # --------------------------------------------------------
+
+    daily_coordinates = []
+
+    for x_position, point in zip(
+        x_positions,
+        points,
+    ):
+        daily_coordinates.append(
+            f"{x_position:.1f},{daily_y(point.value):.1f}"
+        )
+
+    daily_line = " ".join(
+        daily_coordinates
+    )
+
+    # --------------------------------------------------------
+    # Cumulative line
+    # --------------------------------------------------------
+
+    cumulative_coordinates = []
+
+    for x_position, point in zip(
+        x_positions,
+        cumulative_points,
+    ):
+        cumulative_coordinates.append(
+            f"{x_position:.1f},{cumulative_y(point.value):.1f}"
+        )
+
+    cumulative_line = " ".join(
+        cumulative_coordinates
+    )
+
+    # --------------------------------------------------------
+    # Последние точки
+    # --------------------------------------------------------
+
+    latest_daily = points[-1]
+    latest_total = cumulative_points[-1]
+
+    latest_x = x_positions[-1]
+
+    latest_daily_y = daily_y(
+        latest_daily.value
+    )
+
+    latest_total_y = cumulative_y(
+        latest_total.value
+    )
+
+    # --------------------------------------------------------
+    # Разведение подписей
+    #
+    # Значения подписываются справа от точек.
+    #
+    # Но если точки находятся близко по вертикали, текст может
+    # столкнуться. Поэтому дополнительно проверяем расстояние.
+    # --------------------------------------------------------
+
+    daily_label_y = latest_daily_y + 3
+    total_label_y = latest_total_y + 3
+
+    minimum_label_distance = 12
+
+    if abs(daily_label_y - total_label_y) < minimum_label_distance:
+        if daily_label_y <= total_label_y:
+            daily_label_y -= minimum_label_distance / 2
+            total_label_y += minimum_label_distance / 2
+        else:
+            total_label_y -= minimum_label_distance / 2
+            daily_label_y += minimum_label_distance / 2
+
+    # Не позволяем тексту выйти за вертикальные границы SVG.
+    daily_label_y = max(
+        10,
+        min(HEIGHT - 18, daily_label_y),
+    )
+
+    total_label_y = max(
+        10,
+        min(HEIGHT - 18, total_label_y),
+    )
+
+    # --------------------------------------------------------
+    # SVG
+    # --------------------------------------------------------
+
+    svg = f"""\
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 {WIDTH} {HEIGHT}"
+  width="{WIDTH}"
+  height="{HEIGHT}"
+  role="img"
+  aria-label="GitHub clones"
+>
+
+  <style>
+    .title {{
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      fill: {COLOR_TEXT};
     }}
 
-    .daily-line {{
-      fill: none;
-      stroke: #57606a;
-      stroke-width: 1.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }}
-
-    .cumulative-line {{
-      fill: none;
-      stroke: #0969da;
-      stroke-width: 1.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }}
-
-    .daily-point {{
-      fill: #57606a;
-    }}
-
-    .cumulative-point {{
-      fill: #0969da;
+    .label {{
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      font-size: 9px;
+      fill: {COLOR_MUTED};
     }}
 
     .legend {{
@@ -293,133 +608,255 @@ def create_chart(
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-      font-size: 7px;
-      fill: #6e7781;
+      font-size: 8px;
+      fill: {COLOR_TEXT};
+    }}
+
+    .daily-value {{
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      fill: {COLOR_DAILY};
+    }}
+
+    .total-value {{
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      fill: {COLOR_TOTAL};
     }}
   </style>
 
-  <!-- Title -->
+  <!-- ======================================================
+       Заголовок
+       ====================================================== -->
+
   <text
     x="{PADDING_LEFT}"
-    y="12"
+    y="13"
     class="title"
-  >{escape(title)}</text>
+  >
+    GitHub clones
+  </text>
 
-  <!-- Legend -->
+
+  <!-- ======================================================
+       Легенда
+       ====================================================== -->
+
+  <line
+    x1="{PADDING_LEFT + 82}"
+    y1="9"
+    x2="{PADDING_LEFT + 91}"
+    y2="9"
+    stroke="{COLOR_DAILY}"
+    stroke-width="2"
+    stroke-linecap="round"
+  />
+
+  <text
+    x="{PADDING_LEFT + 95}"
+    y="12"
+    class="legend"
+  >
+    Daily
+  </text>
+
+  <line
+    x1="{PADDING_LEFT + 128}"
+    y1="9"
+    x2="{PADDING_LEFT + 137}"
+    y2="9"
+    stroke="{COLOR_TOTAL}"
+    stroke-width="2"
+    stroke-linecap="round"
+  />
+
+  <text
+    x="{PADDING_LEFT + 141}"
+    y="12"
+    class="legend"
+  >
+    Total
+  </text>
+
+
+  <!-- ======================================================
+       Нижняя базовая линия
+       ====================================================== -->
+
   <line
     x1="{PADDING_LEFT}"
-    y1="19"
-    x2="{PADDING_LEFT + 9}"
-    y2="19"
-    class="daily-line"
+    y1="{PADDING_TOP + CHART_HEIGHT}"
+    x2="{PADDING_LEFT + CHART_WIDTH}"
+    y2="{PADDING_TOP + CHART_HEIGHT}"
+    stroke="{COLOR_GRID}"
+    stroke-width="1"
   />
 
-  <text
-    x="{PADDING_LEFT + 12}"
-    y="21.5"
-    class="legend"
-  >Daily</text>
 
-  <line
-    x1="{PADDING_LEFT + 47}"
-    y1="19"
-    x2="{PADDING_LEFT + 56}"
-    y2="19"
-    class="cumulative-line"
-  />
+  <!-- ======================================================
+       Daily
+       ====================================================== -->
 
-  <text
-    x="{PADDING_LEFT + 59}"
-    y="21.5"
-    class="legend"
-  >Cumulative</text>
-
-  <!-- Daily line -->
   <polyline
-    points="{daily_path}"
-    class="daily-line"
+    points="{daily_line}"
+    fill="none"
+    stroke="{COLOR_DAILY}"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
   />
 
-  <!-- Cumulative line -->
-  <polyline
-    points="{cumulative_path}"
-    class="cumulative-line"
-  />
-
-  <!-- Daily endpoint -->
   <circle
-    cx="{last_x:.1f}"
-    cy="{daily_y:.1f}"
-    r="2"
-    class="daily-point"
+    cx="{latest_x:.1f}"
+    cy="{latest_daily_y:.1f}"
+    r="2.5"
+    fill="{COLOR_DAILY}"
   />
 
+
+  <!-- ======================================================
+       Total
+       ====================================================== -->
+
+  <polyline
+    points="{cumulative_line}"
+    fill="none"
+    stroke="{COLOR_TOTAL}"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <circle
+    cx="{latest_x:.1f}"
+    cy="{latest_total_y:.1f}"
+    r="2.5"
+    fill="{COLOR_TOTAL}"
+  />
+
+
+  <!-- ======================================================
+       Конечные значения
+       
+       ВАЖНО:
+       подписи находятся СПРАВА от точек, а не слева.
+       
+       latest_x + 6 гарантирует зазор между точкой и текстом.
+       Дополнительный PADDING_RIGHT гарантирует, что текст
+       остаётся внутри SVG.
+       ====================================================== -->
+
   <text
-    x="{last_x - 4:.1f}"
+    x="{latest_x + 6:.1f}"
     y="{daily_label_y:.1f}"
-    text-anchor="end"
-    class="value"
-    fill="#57606a"
-  >{format_number(latest_daily.value)}</text>
-
-  <!-- Cumulative endpoint -->
-  <circle
-    cx="{last_x:.1f}"
-    cy="{cumulative_y:.1f}"
-    r="2"
-    class="cumulative-point"
-  />
+    class="daily-value"
+  >
+    {format_number(latest_daily.value)}
+  </text>
 
   <text
-    x="{last_x - 4:.1f}"
-    y="{cumulative_label_y:.1f}"
-    text-anchor="end"
-    class="value"
-    fill="#0969da"
-  >{format_number(latest_cumulative.value)}</text>
+    x="{latest_x + 6:.1f}"
+    y="{total_label_y:.1f}"
+    class="total-value"
+  >
+    {format_number(latest_total.value)}
+  </text>
 
-  <!-- Date range -->
+
+  <!-- ======================================================
+       Даты
+       ====================================================== -->
+
   <text
     x="{PADDING_LEFT}"
-    y="{HEIGHT - 8}"
+    y="{HEIGHT - 7}"
     class="label"
-  >{escape(points[0].date)}</text>
+  >
+    {escape(points[0].date)}
+  </text>
 
   <text
     x="{WIDTH - PADDING_RIGHT}"
-    y="{HEIGHT - 8}"
+    y="{HEIGHT - 7}"
     text-anchor="end"
     class="label"
-  >{escape(points[-1].date)}</text>
+  >
+    {escape(latest_daily.date)}
+  </text>
+
 </svg>
 """
 
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(svg, encoding="utf-8")
+    output.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    output.write_text(
+        svg,
+        encoding="utf-8",
+    )
 
 
-# ─────────────────────────────────────────────
+# ============================================================
 # Main
-# ─────────────────────────────────────────────
+# ============================================================
 
 def main() -> None:
-    CHARTS.mkdir(parents=True, exist_ok=True)
+    """
+    Точка входа генератора.
 
-    views = load_snapshots("views")
-    clones = load_snapshots("clones")
+    Генерируем два графика:
 
-    create_chart(
+        traffic/charts/views.svg
+        traffic/charts/clones.svg
+    """
+
+    CHARTS.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    # --------------------------------------------------------
+    # Views
+    # --------------------------------------------------------
+
+    views = load_snapshots(
+        "views"
+    )
+
+    create_views_chart(
         views,
-        "GitHub views",
         CHARTS / "views.svg",
     )
 
-    create_chart(
+    # --------------------------------------------------------
+    # Clones
+    # --------------------------------------------------------
+
+    clones = load_snapshots(
+        "clones"
+    )
+
+    create_clones_chart(
         clones,
-        "GitHub clones",
         CHARTS / "clones.svg",
     )
 
+
+# ============================================================
+# Script entry point
+# ============================================================
 
 if __name__ == "__main__":
     main()
