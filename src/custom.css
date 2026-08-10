@@ -217,18 +217,18 @@ abbr {
    --------------------------------------------------------- */
 
 body.night .main-question {
-  color: #6ea8ff;
+  color: #6ea8ff !important;
   text-shadow:
     0 0 2px rgba(120, 165, 255, 0.3);
 }
 
 body.night .main-question p,
 body.night .main-question strong {
-  color: #6ea8ff;
+  color: #6ea8ff !important;
 }
 
 body.night .main-question::before {
-  background: #6ea8ff;
+  background: #6ea8ff !important;
 }
 
 
