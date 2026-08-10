@@ -4,16 +4,25 @@
   width="280"
   height="120"
   role="img"
-  aria-label="GitHub clones"
+  aria-label="GitHub clones: daily and cumulative"
 >
   <style>
     .title {
-      font: 600 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 11px;
+      font-weight: 600;
       fill: #1f2937;
     }
 
+    .legend {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 7px;
+      fill: #6b7280;
+    }
+
     .label {
-      font: 400 10px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 8px;
       fill: #6b7280;
     }
 
@@ -22,23 +31,29 @@
       stroke-width: 1;
     }
 
-    .line {
+    .daily {
       fill: none;
-      stroke: #1f4b99;
-      stroke-width: 2.5;
+      stroke: #315f9f;
+      stroke-width: 1.8;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
-    .point {
-      fill: #1f4b99;
+    .cumulative {
+      fill: none;
+      stroke: #9ca3af;
+      stroke-width: 1.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 3 2;
     }
 
     @media (prefers-color-scheme: dark) {
       .title {
-        fill: #f3f4f6;
+        fill: #e5e7eb;
       }
 
+      .legend,
       .label {
         fill: #9ca3af;
       }
@@ -47,56 +62,66 @@
         stroke: #374151;
       }
 
-      .line {
-        stroke: #6ea8ff;
+      .daily {
+        stroke: #8fb5e8;
       }
 
-      .point {
-        fill: #6ea8ff;
+      .cumulative {
+        stroke: #9ca3af;
       }
     }
   </style>
 
   <text
     x="36"
-    y="22"
+    y="12"
     class="title"
   >GitHub clones</text>
 
   <line
     x1="36"
     y1="98"
-    x2="270"
+    x2="244"
     y2="98"
     class="grid"
   />
 
   <line
     x1="36"
-    y1="61.0"
-    x2="270"
-    y2="61.0"
-    class="grid"
+    y1="17"
+    x2="46"
+    y2="17"
+    class="daily"
   />
 
+  <text
+    x="49"
+    y="19"
+    class="legend"
+  >daily</text>
+
   <line
-    x1="36"
-    y1="24"
-    x2="270"
-    y2="24"
-    class="grid"
+    x1="84"
+    y1="17"
+    x2="94"
+    y2="17"
+    class="cumulative"
+  />
+
+  <text
+    x="97"
+    y="19"
+    class="legend"
+  >cumulative</text>
+
+  <polyline
+    points="36.0,98.0 52.0,98.0 68.0,98.0 84.0,98.0 100.0,98.0 116.0,98.0 132.0,98.0 148.0,98.0 164.0,98.0 180.0,98.0 196.0,80.1 212.0,62.9 228.0,40.3 244.0,24.0"
+    class="cumulative"
   />
 
   <polyline
-    points="36.0,98.0 54.0,98.0 72.0,98.0 90.0,98.0 108.0,98.0 126.0,98.0 144.0,98.0 162.0,98.0 180.0,98.0 198.0,98.0 216.0,39.4 234.0,41.7 252.0,24.0 270.0,44.7"
-    class="line"
-  />
-
-  <circle
-    cx="270.0"
-    cy="44.7"
-    r="4"
-    class="point"
+    points="36.0,98.0 52.0,98.0 68.0,98.0 84.0,98.0 100.0,98.0 116.0,98.0 132.0,98.0 148.0,98.0 164.0,98.0 180.0,98.0 196.0,39.4 212.0,41.7 228.0,24.0 244.0,44.7"
+    class="daily"
   />
 
   <text
@@ -106,16 +131,29 @@
   >2026-07-27</text>
 
   <text
-    x="270"
+    x="244"
     y="108"
     text-anchor="end"
     class="label"
   >2026-08-09</text>
 
   <text
-    x="270"
+    x="32"
+    y="31"
+    text-anchor="end"
+    class="label"
+  >197</text>
+
+  <text
+    x="248"
+    y="31"
+    class="label"
+  >645</text>
+
+  <text
+    x="244"
     y="14"
     text-anchor="end"
     class="label"
-  >142</text>
+  >Σ 645</text>
 </svg>
