@@ -4,156 +4,129 @@
   width="280"
   height="120"
   role="img"
-  aria-label="GitHub clones: daily and cumulative"
+  aria-label="GitHub clones"
 >
   <style>
     .title {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
       font-size: 11px;
       font-weight: 600;
-      fill: #1f2937;
-    }
-
-    .legend {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 7px;
-      fill: #6b7280;
+      fill: #333;
     }
 
     .label {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
       font-size: 8px;
-      fill: #6b7280;
+      fill: #888;
     }
 
-    .grid {
-      stroke: #e5e7eb;
-      stroke-width: 1;
+    .value {
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      fill: #333;
     }
 
-    .daily {
+    .daily-line {
       fill: none;
-      stroke: #315f9f;
-      stroke-width: 1.8;
+      stroke: #315a9b;
+      stroke-width: 1.5;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
-    .cumulative {
+    .cumulative-line {
       fill: none;
-      stroke: #9ca3af;
-      stroke-width: 1.4;
+      stroke: #777;
+      stroke-width: 1.5;
       stroke-linecap: round;
       stroke-linejoin: round;
-      stroke-dasharray: 3 2;
+      stroke-dasharray: 4 3;
     }
 
-    @media (prefers-color-scheme: dark) {
-      .title {
-        fill: #e5e7eb;
-      }
+    .daily-point {
+      fill: #315a9b;
+    }
 
-      .legend,
-      .label {
-        fill: #9ca3af;
-      }
-
-      .grid {
-        stroke: #374151;
-      }
-
-      .daily {
-        stroke: #8fb5e8;
-      }
-
-      .cumulative {
-        stroke: #9ca3af;
-      }
+    .cumulative-point {
+      fill: #777;
     }
   </style>
 
   <text
     x="36"
-    y="12"
+    y="16"
     class="title"
-  >GitHub clones</text>
-
-  <line
-    x1="36"
-    y1="98"
-    x2="244"
-    y2="98"
-    class="grid"
-  />
-
-  <line
-    x1="36"
-    y1="17"
-    x2="46"
-    y2="17"
-    class="daily"
-  />
-
-  <text
-    x="49"
-    y="19"
-    class="legend"
-  >daily</text>
-
-  <line
-    x1="84"
-    y1="17"
-    x2="94"
-    y2="17"
-    class="cumulative"
-  />
-
-  <text
-    x="97"
-    y="19"
-    class="legend"
-  >cumulative</text>
+  >
+    GitHub clones
+  </text>
 
   <polyline
-    points="36.0,98.0 52.0,98.0 68.0,98.0 84.0,98.0 100.0,98.0 116.0,98.0 132.0,98.0 148.0,98.0 164.0,98.0 180.0,98.0 196.0,80.1 212.0,62.9 228.0,40.3 244.0,24.0"
-    class="cumulative"
+    points="36.0,98.0 54.0,98.0 72.0,98.0 90.0,98.0 108.0,98.0 126.0,98.0 144.0,98.0 162.0,98.0 180.0,98.0 198.0,98.0 216.0,80.1 234.0,80.8 252.0,75.4 270.0,81.7"
+    class="daily-line"
   />
 
   <polyline
-    points="36.0,98.0 52.0,98.0 68.0,98.0 84.0,98.0 100.0,98.0 116.0,98.0 132.0,98.0 148.0,98.0 164.0,98.0 180.0,98.0 196.0,39.4 212.0,41.7 228.0,24.0 244.0,44.7"
-    class="daily"
+    points="36.0,98.0 54.0,98.0 72.0,98.0 90.0,98.0 108.0,98.0 126.0,98.0 144.0,98.0 162.0,98.0 180.0,98.0 198.0,98.0 216.0,80.1 234.0,62.9 252.0,40.3 270.0,24.0"
+    class="cumulative-line"
   />
+
+  <circle
+    cx="270.0"
+    cy="81.7"
+    r="2.5"
+    class="daily-point"
+  />
+
+  <circle
+    cx="270.0"
+    cy="24.0"
+    r="2.5"
+    class="cumulative-point"
+  />
+
+  <text
+    x="242.0"
+    y="85.7"
+    class="value"
+  >
+    142
+  </text>
+
+  <text
+    x="242.0"
+    y="28.0"
+    class="value"
+  >
+    645
+  </text>
 
   <text
     x="36"
-    y="108"
+    y="112"
     class="label"
-  >2026-07-27</text>
+  >
+    2026-07-27
+  </text>
 
   <text
-    x="244"
-    y="108"
+    x="270"
+    y="112"
     text-anchor="end"
     class="label"
-  >2026-08-09</text>
-
-  <text
-    x="32"
-    y="31"
-    text-anchor="end"
-    class="label"
-  >197</text>
-
-  <text
-    x="248"
-    y="31"
-    class="label"
-  >645</text>
-
-  <text
-    x="244"
-    y="14"
-    text-anchor="end"
-    class="label"
-  >Σ 645</text>
+  >
+    2026-08-09
+  </text>
 </svg>
