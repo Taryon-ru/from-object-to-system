@@ -5,6 +5,7 @@
 
 [📖 Читать книгу онлайн (так удобно)](https://taryon-ru.github.io/from-object-to-system/)
 
+Для тех, кто хочет заглянуть под капот — [KContext Service](https://github.com/Taryon-ru/KContext-Service/tree/main).
 
 #### Статистика
 
@@ -21,6 +22,7 @@
 
 > Статистика собирается автоматически из GitHub Traffic API.
 > Данные сохраняются ежедневно в ветке [traffic-data](https://github.com/taryon-ru/from-object-to-system/tree/traffic-data).
+
 ---
 
 ## О книге
@@ -79,6 +81,8 @@
 
 
 [📖 Read the book online](https://taryon-ru.github.io/from-object-to-system/)
+
+For those who want to look under the hood — [KContext Service](https://github.com/Taryon-ru/KContext-Service/tree/main).
 
 A book about how the representation of engineering objects determines the data model and architecture of digital platforms.
 
