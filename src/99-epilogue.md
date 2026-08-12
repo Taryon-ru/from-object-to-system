@@ -189,6 +189,11 @@ KObject: 12345
 
 ---
 
+## Для тех, кто хочет заглянуть под капот — [KContext Service](https://github.com/Taryon-ru/KContext-Service/tree/main).
+
+---
+
+
 использовать:
 
 |Тип|Значение|
