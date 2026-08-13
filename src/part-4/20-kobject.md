@@ -443,8 +443,8 @@ KObject
           ↓         ↓         ↓
       KProduct  KDocument   KUser
           │
-     ┌────┼────┬────────┐
-     ↓    ↓    ↓        ↓
+     ┌────┼────┬────────┬────────┐
+     ↓    ↓    ↓        ↓        ↓
  Attribute Definition Context Relation
                  │
               Revision
