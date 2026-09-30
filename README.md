@@ -5,6 +5,8 @@
 
 [📖 Читать книгу онлайн (так удобно)](https://taryon-ru.github.io/from-object-to-system/)
 
+[📖 От объекта к контексту (draft)](https://taryon-ru.github.io/from-object-to-context/)
+
 Для тех, кто хочет заглянуть под капот — [KContext Service](https://github.com/Taryon-ru/KContext-Service/tree/main).
 
 #### Статистика
@@ -81,6 +83,8 @@
 
 
 [📖 Read the book online](https://taryon-ru.github.io/from-object-to-system/)
+
+[📖 From Object To  Context (draft)](https://taryon-ru.github.io/from-object-to-context/)
 
 For those who want to look under the hood — [KContext Service](https://github.com/Taryon-ru/KContext-Service/tree/main).
 
